@@ -42,9 +42,8 @@ CI requires 90% coverage. Wiring a project in → [`INTEGRATION.md`](INTEGRATION
   a server here later is a thin wrapper, not a redesign. See INTEGRATION.md § "From an MCP gateway".
 - **No language model runs inside it.** Searching, merging, collections and sweeps are string
   matching and bookkeeping, so behaviour is testable and repeatable.
-- **Visibility is undecided** (2026-10-07). paper-fetch and retrieval-augmented-generation are
-  public; dataset-fetch is private. Public is the irreversible direction; record the decision
-  here with its date when it is made.
+- **Visibility: public**, decided 2026-10-07 by the operator, like paper-fetch and
+  retrieval-augmented-generation (dataset-fetch is private). Public is the irreversible direction.
 
 ## ⭐ Not a legal opinion — and the code may not pretend otherwise
 
