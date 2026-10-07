@@ -1,0 +1,144 @@
+{
+ "total": 1,
+ "max_score": 16.89,
+ "results": 1,
+ "data": [
+  {
+   "lens_id": "031-156-664-106-437",
+   "jurisdiction": "US",
+   "doc_number": "20120029596",
+   "kind": "A1",
+   "date_published": "2012-02-02",
+   "lang": "en",
+   "biblio": {
+    "invention_title": [
+     {
+      "text": "Verfahren",
+      "lang": "de"
+     },
+     {
+      "text": "Methods and systems for fitting a bilateral cochlear implant",
+      "lang": "en"
+     }
+    ],
+    "application_reference": {
+     "jurisdiction": "US",
+     "doc_number": "201113192539",
+     "kind": "A",
+     "date": "2011-07-28"
+    },
+    "priority_claims": {
+     "claims": [
+      {
+       "jurisdiction": "US",
+       "doc_number": "36937010",
+       "kind": "P",
+       "date": "2010-07-30"
+      }
+     ],
+     "earliest_claim": {
+      "date": "2010-07-30"
+     }
+    },
+    "parties": {
+     "applicants": [
+      {
+       "residence": "CH",
+       "extracted_name": {
+        "value": "ADVANCED BIONICS AG"
+       }
+      }
+     ],
+     "inventors": [
+      {
+       "residence": "US",
+       "sequence": 1,
+       "extracted_name": {
+        "value": "CHAPA FERNANDO"
+       }
+      },
+      {
+       "residence": "US",
+       "sequence": 2,
+       "extracted_name": {
+        "value": "CALLE GUILLERMO A"
+       }
+      }
+     ]
+    },
+    "classifications_cpc": {
+     "classifications": [
+      {
+       "symbol": "A61N1/36038"
+      },
+      {
+       "symbol": "H04R25/70"
+      }
+     ]
+    },
+    "references_cited": {
+     "citations": [
+      {
+       "sequence": 1,
+       "patcit": {
+        "document_id": {
+         "jurisdiction": "US",
+         "doc_number": "7861317",
+         "kind": "B2"
+        },
+        "lens_id": "000-000-000-000-001"
+       }
+      },
+      {
+       "sequence": 2,
+       "nplcit": {
+        "text": "An article"
+       }
+      }
+     ],
+     "patent_count": 1,
+     "npl_count": 1
+    }
+   },
+   "abstract": [
+    {
+     "text": "An exemplary method of fitting a bilateral cochlear implant patient.",
+     "lang": "en"
+    }
+   ],
+   "claims": [
+    {
+     "claims": [
+      {
+       "claim_text": [
+        "1. A method comprising:",
+        "using a first sound processor."
+       ]
+      },
+      {
+       "claim_text": [
+        "2. The method of claim 1."
+       ]
+      }
+     ],
+     "lang": "en"
+    }
+   ],
+   "description": {
+    "text": "BACKGROUND The sense of hearing in human beings involves the cochlea.",
+    "lang": "en"
+   },
+   "legal_status": {
+    "granted": true,
+    "grant_date": "2015-08-11",
+    "patent_status": "ACTIVE"
+   },
+   "publication_type": "PATENT_APPLICATION"
+  },
+  {
+   "lens_id": "x",
+   "jurisdiction": null,
+   "doc_number": null
+  }
+ ]
+}

@@ -1,0 +1,176 @@
+{
+ "version": "6.9",
+ "hitCount": 633,
+ "resultList": {
+  "result": [
+   {
+    "id": "WO2012016009",
+    "source": "PAT",
+    "title": "METHODS AND SYSTEMS FOR FITTING A BILATERAL COCHLEAR IMPLANT USING A SINGLE SOUND PROCESSOR",
+    "authorString": "CHAPA FERNANDO, CALLE GUILLERMO A, JOHNSTON JACOB.",
+    "authorList": {
+     "author": [
+      {
+       "fullName": "CHAPA FERNANDO",
+       "lastName": "CHAPA FERNANDO"
+      },
+      {
+       "fullName": "CALLE GUILLERMO A",
+       "lastName": "CALLE GUILLERMO A"
+      },
+      {
+       "fullName": "JOHNSTON JACOB",
+       "lastName": "JOHNSTON JACOB"
+      }
+     ]
+    },
+    "pubYear": "2012",
+    "abstractText": "An exemplary method of fitting a bilateral cochlear implant patient using a single sound processor includes a fitting subsystem using a first sound processor associated with a first cochlear implant to selectively fit the first cochlear implant and a second cochlear implant to a cochlear implant patient, automatically segregating fitting data generated during the fitting of the first cochlear implant from fitting data generated during the fitting of the second cochlear implant, and transmitting the fitting data generated during the fitting of the second cochlear implant to a second sound processor associated with the second cochlear implant after the fitting of the second cochlear implant to the cochlear implant patient is completed. Corresponding methods and systems are also described.",
+    "affiliation": "ADVANCED BIONICS AG",
+    "pubTypeList": {
+     "pubType": [
+      "Patent"
+     ]
+    },
+    "patentDetails": {
+     "typeCode": "A1",
+     "typeDescription": "Publ.of the Int.Appl. with Int.search report",
+     "countryCode": "WO",
+     "country": "World Intellectual Property Organization",
+     "classifierList": {
+      "classifier": [
+       {
+        "classification": "H04R25/55B",
+        "classificationType": "EPO",
+        "hyperlink": "http://worldwide.espacenet.com/classification?locale=en_EP#!/CPC=H04R25/55"
+       },
+       {
+        "classification": "H04R25/70",
+        "classificationType": "EPO",
+        "hyperlink": "http://worldwide.espacenet.com/classification?locale=en_EP#!/CPC=H04R25/70"
+       },
+       {
+        "classification": "A61N1/36",
+        "classificationType": "IPC",
+        "hyperlink": "http://www.cooperativepatentclassification.org/cpc/scheme/A/scheme-A61N.pdf"
+       },
+       {
+        "classification": "H04R25/00",
+        "classificationType": "IPC",
+        "hyperlink": "http://www.cooperativepatentclassification.org/cpc/scheme/H/scheme-H04R.pdf"
+       }
+      ]
+     },
+     "application": {
+      "applicationNumber": "WO2011US45674",
+      "applicationDate": "2011-07-28",
+      "orderIn": 0
+     },
+     "priorityList": {
+      "priority": [
+       {
+        "priorityNumber": "US20100847099",
+        "orderIn": 1,
+        "priorityDate": "2011-07-28"
+       }
+      ]
+     }
+    },
+    "fullTextUrlList": {
+     "fullTextUrl": [
+      {
+       "availability": "Free",
+       "availabilityCode": "F",
+       "documentStyle": "html",
+       "site": "EPO",
+       "url": "http://v3.espacenet.com/textdoc?DB=EPODOC&IDX=WO2012016009"
+      },
+      {
+       "availability": "Free",
+       "availabilityCode": "F",
+       "documentStyle": "html",
+       "site": "SureChembl",
+       "url": "https://www.surechembl.org/document/WO-2012016009-A1"
+      }
+     ]
+    },
+    "firstPublicationDate": "2011-07-28"
+   },
+   {
+    "id": "WO2012002467",
+    "source": "PAT",
+    "title": "MUSIC INFORMATION PROCESSING DEVICE, METHOD, PROGRAM, MUSIC INFORMATION PROCESSING SYSTEM FOR COCHLEAR IMPLANT, MUSIC INFORMATION PRODUCTION METHOD AND MEDIUM FOR COCHLEAR IMPLANT",
+    "authorString": "KITAZAWA SHIGEYOSHI.",
+    "authorList": {
+     "author": [
+      {
+       "fullName": "KITAZAWA SHIGEYOSHI",
+       "lastName": "KITAZAWA SHIGEYOSHI"
+      }
+     ]
+    },
+    "pubYear": "2012",
+    "abstractText": "The purpose of the present invention is to facilitate improved recognition when a person with a cochlear implant hears music or other sounds. MIDI data of a musical composition from a sound source device (12) is processed with a music information processing device main body (14). First, the main melody is extracted, scales and intervals are analyzed, and a scale set, comprising scale sequences and interval sequences, is derived. The scale set is transposed to a scale set that will stimulate more different electrodes while retaining the intervals of the original composition, in order that the person with the cochlear implant will be able to recognize the melody of the music. A speaker (26) is driven by an audio signal generator (24), thus providing the music to a cochlear implant device (30).",
+    "affiliation": "KITAZAWA SHIGEYOSHI",
+    "pubTypeList": {
+     "pubType": [
+      "Patent"
+     ]
+    },
+    "patentDetails": {
+     "typeCode": "A1",
+     "typeDescription": "Publ.of the Int.Appl. with Int.search report",
+     "countryCode": "WO",
+     "country": "World Intellectual Property Organization",
+     "classifierList": {
+      "classifier": [
+       {
+        "classification": "A61F11/00",
+        "classificationType": "IPC",
+        "hyperlink": "http://www.cooperativepatentclassification.org/cpc/scheme/A/scheme-A61F.pdf"
+       },
+       {
+        "classification": "G10H1/00",
+        "classificationType": "IPC",
+        "hyperlink": "http://www.cooperativepatentclassification.org/cpc/scheme/G/scheme-G10H.pdf"
+       }
+      ]
+     },
+     "application": {
+      "applicationNumber": "WO2011JP64981",
+      "applicationDate": "2011-06-29",
+      "orderIn": 0
+     },
+     "priorityList": {
+      "priority": [
+       {
+        "priorityNumber": "JP20100148284",
+        "orderIn": 1,
+        "priorityDate": "2011-06-29"
+       }
+      ]
+     }
+    },
+    "fullTextUrlList": {
+     "fullTextUrl": [
+      {
+       "availability": "Free",
+       "availabilityCode": "F",
+       "documentStyle": "html",
+       "site": "EPO",
+       "url": "http://v3.espacenet.com/textdoc?DB=EPODOC&IDX=WO2012002467"
+      },
+      {
+       "availability": "Free",
+       "availabilityCode": "F",
+       "documentStyle": "html",
+       "site": "SureChembl",
+       "url": "https://www.surechembl.org/document/WO-2012002467-A1"
+      }
+     ]
+    },
+    "firstPublicationDate": "2011-06-29"
+   }
+  ]
+ }
+}

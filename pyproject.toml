@@ -1,0 +1,123 @@
+[project]
+name = "patent-fetch"
+dynamic = ["version"]
+description = "Find existing patents through swappable providers, and keep a deduplicated library of the ones you read, with provenance."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "PolarizeTech" }]
+keywords = ["patents", "prior-art", "patent-search", "epo-ops", "google-patents", "provenance"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
+]
+# The core is the standard library only.
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/polarizetech/patent-fetch"
+
+[project.optional-dependencies]
+s3 = ["boto3>=1.26"]
+
+[project.scripts]
+patent-fetch = "patent_fetch.cli:main"
+
+[dependency-groups]
+dev = [
+    "boto3>=1.26",
+    "pyright>=1.1.380",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/patent_fetch/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/patent_fetch"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/patent_fetch", "tests", "README.md", "LICENSE", "pyproject.toml"]
+
+# ---------------------------------------------------------------------------------------- ruff
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F",  # pycodestyle, pyflakes
+    "I",            # isort
+    "UP",           # pyupgrade
+    "B",            # bugbear
+    "BLE",          # blind except: every broad catch must say why (noqa + comment)
+    "C4",           # comprehensions
+    "PIE",
+    "PT",           # pytest style
+    "RET",
+    "SIM",
+    "RUF",
+    "PL",           # pylint
+]
+ignore = [
+    # Early returns are how the parsers and resolvers say "no answer from this source" at each
+    # step; folding them into one exit would need flags that are harder to read.
+    "PLR0911",
+    # Magic-value comparisons are the norm when parsing third-party API payloads
+    # (HTTP status codes, schema field values); naming each one would hide what is compared.
+    "PLR2004",
+    # Argument counts mirror the dataclass-like records the providers build (Patent).
+    "PLR0913",
+    # `Library.search` and the CLI dispatcher are linear sequences of documented steps; splitting
+    # them only to satisfy a counter would scatter the provenance record across helpers.
+    "PLR0912", "PLR0915",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: private helpers are exercised directly, and `assert` + fixtures are the point.
+"tests/**" = ["PLC2701", "PLR0904"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+# ------------------------------------------------------------------------------------- pyright
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+extraPaths = ["tests"]
+
+# -------------------------------------------------------------------------------------- pytest
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["patent_fetch"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "if __name__ == .__main__.:"]

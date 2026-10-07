@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ops:world-patent-data xmlns:ops="http://ops.epo.org" xmlns="http://www.epo.org/exchange">
+  <ftxt:fulltext-documents xmlns:ftxt="http://www.epo.org/fulltext">
+    <ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only">
+      <ftxt:description lang="EN">
+        <ftxt:p>BACKGROUND</ftxt:p>
+        <ftxt:p>The sense of hearing in human beings involves the use of hair cells in the cochlea.</ftxt:p>
+      </ftxt:description>
+    </ftxt:fulltext-document>
+  </ftxt:fulltext-documents>
+</ops:world-patent-data>

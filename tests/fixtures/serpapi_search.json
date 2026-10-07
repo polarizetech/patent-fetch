@@ -1,0 +1,35 @@
+{
+ "search_metadata": {
+  "status": "Success"
+ },
+ "search_parameters": {
+  "engine": "google_patents",
+  "q": "(solar tracking)"
+ },
+ "organic_results": [
+  {
+   "position": 1,
+   "rank": 0,
+   "patent_id": "patent/EP2264377A2/en",
+   "patent_link": "https://patents.google.com/patent/EP2264377A2/en",
+   "title": "Apparatus for two-way tracing and concentrating sunlight of roof installation type",
+   "snippet": "a plurality of second open push rods which have one sides",
+   "priority_date": "2009-06-03",
+   "filing_date": "2009-12-04",
+   "publication_date": "2010-12-22",
+   "inventor": "Young Hwan Park",
+   "assignee": "Green Plus Co. Ltd.",
+   "publication_number": "EP2264377A2",
+   "language": "en",
+   "country_status": {
+    "EP": "NOT_ACTIVE",
+    "US": "NOT_ACTIVE"
+   }
+  },
+  {
+   "position": 2,
+   "title": "A scholar result with no publication number",
+   "is_scholar": true
+  }
+ ]
+}

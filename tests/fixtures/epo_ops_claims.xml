@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ops:world-patent-data xmlns:ops="http://ops.epo.org" xmlns="http://www.epo.org/exchange">
+  <ftxt:fulltext-documents xmlns:ftxt="http://www.epo.org/fulltext">
+    <ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only">
+      <ftxt:bibliographic-data><ftxt:publication-reference data-format="docdb"><ftxt:document-id><ftxt:country>EP</ftxt:country><ftxt:doc-number>2598092</ftxt:doc-number><ftxt:kind>B1</ftxt:kind></ftxt:document-id></ftxt:publication-reference></ftxt:bibliographic-data>
+      <ftxt:claims lang="DE"><ftxt:claim><ftxt:claim-text>1. Verfahren, umfassend: Anpassen.</ftxt:claim-text></ftxt:claim></ftxt:claims>
+      <ftxt:claims lang="EN"><ftxt:claim>
+        <ftxt:claim-text>1. A method comprising: using a first sound processor to fit a first cochlear implant.</ftxt:claim-text>
+        <ftxt:claim-text>2. The method of claim 1, further comprising transmitting the fitting data.</ftxt:claim-text>
+      </ftxt:claim></ftxt:claims>
+    </ftxt:fulltext-document>
+  </ftxt:fulltext-documents>
+</ops:world-patent-data>
