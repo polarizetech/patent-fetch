@@ -40,8 +40,8 @@ CI requires 90% coverage. Wiring a project in → [`INTEGRATION.md`](INTEGRATION
   is about an invention, it runs `patent-fetch --json search "<words>"` once per query and prints
   the hits under "Existing patents on this". Nothing is fetched and nothing becomes evidence.
   **So the JSON that `--json search` prints is a contract with another repository**: `hits` (with
-  `id`, `title`, `year`, `applicants`, `inventors`, `classifications`, `status`, `url`) and
-  `providers` (with `provider`, `status`). Add fields freely; renaming or removing one means a change there
+  `id`, `title`, `year`, `applicants`, `inventors`, `classifications`, `status`, `url`,
+  `also_published_as`) and `providers` (with `provider`, `status`). Add fields freely; renaming or removing one means a change there
   too. A server here later would be a thin wrapper over the same `Library` methods. See
   INTEGRATION.md § "From an MCP gateway".
 - **No language model runs inside it.** Searching, merging, collections and sweeps are string
@@ -162,6 +162,35 @@ the EPO's DOCDB, which OPS and Europe PMC use. The key is the eleven-digit form 
 refused with a reason. Not handled: old two-digit-year WO numbers (`WO99/12345`), which Google
 spells `WO1999012345`; they are stored as written.
 
+## Families: one hit per invention
+
+One invention is published several times: an application, its grant, the same filing at other
+offices. Before 2026-10-13 each was its own hit, and a pipeline run showed the cost: four of the
+five patents it listed were the US, EP, WO and CA publications of one Cochlear patent.
+`search()` now folds them (`library._collapse`): one hit is kept and the others are named in its
+`also_published_as` (`id`, `kind`, `year`, `url`, `found_by`, `in_library`). The result says how
+many were folded in `collapsed`. `families=False` / `--all-publications` turns it off.
+
+- **Joined on a shared priority.** `Patent.priorities` (the applications a publication claims
+  priority from) and `Patent.application` (its own) are the keys; two hits that share one are one
+  family. Europe PMC and EPO OPS spell these the same way (`US19950414656`), measured on the
+  Cochlear family above, so hits join **across providers** with no extra request. Punctuation and
+  a trailing kind letter (`US202463551349P`) are ignored. `google-patents` and `serpapi` give no
+  priority numbers, and Lens's spelling is unverified: their hits fail to join rather than join
+  wrongly.
+- **This is the extended family, not the EPO's "simple family".** OPS's own `family-id` puts
+  US5545219 (one priority) in a different family from its EP, WO and CA siblings (the same
+  priority plus one more), which is exactly the case that needed folding. The cost of joining on
+  any shared priority is that a continuation-in-part or a divisional, whose claims differ, folds
+  into its parent. Nothing is discarded: every publication is named with its own link.
+- **Which one is kept:** one held with its text, else one held, else US, then EP, then WO, then
+  any other office; among those the latest, which is the grant where there is one.
+- **Filters apply to publications before grouping**, so `countries=["EP"]` keeps the EP
+  publication of a family whose US one was filtered out.
+- **In a collection, a family is new only if none of its publications was seen before**, and all
+  of them are recorded as seen. The grant of an application already seen is not reported as new.
+  If grants matter to you as events, that is a different feature (legal status), not this one.
+
 ## Collections and sweeps
 
 `patents/collections/<name>.json`: `queries`, `members` (patents someone decided belong), `seen`
@@ -257,7 +286,12 @@ bucket can hold this library beside paper-fetch's `papers/`.
 - **`fulltext.txt` is the description and claims as the provider gave them**, in English where the
   provider offered it; Google's text for non-English filings is a machine translation, and the
   record does not yet say which.
-- **Families are not joined.** A US application publication, its grant and its EP equivalent are
-  three entries. OPS's `family-id` is kept in `extra` when OPS is the source; nothing uses it yet.
+- **Families are joined in search results only** (above). The library still stores each
+  publication under its own number: fetching the EP and the US publication of one invention
+  stores two entries, and `search_library` lists both.
+- **Europe PMC's `priorityDate` is wrong and is not used** (found 2026-10-13): it repeats the
+  application date on every priority. Until then this adapter reported it as the priority date,
+  so a record cached from Europe PMC before that date may carry a filing date under `priority`.
+  Its priority *numbers* are right and are what families are joined on.
 - **The catalogue is one JSON-lines object re-read and rewritten on each change**: fine for
   hundreds of patents, slow for tens of thousands.

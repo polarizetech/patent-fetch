@@ -17,7 +17,7 @@ from conftest import (
 )
 from patent_fetch import Library, LocalStore, MemoryStore, NotFound
 from patent_fetch.library import INDEX, _now
-from patent_fetch.providers import Document, ProviderBroken, ProviderUnavailable
+from patent_fetch.providers import Document, Patent, ProviderBroken, ProviderUnavailable
 
 EP = "EP2598092"
 
@@ -303,6 +303,96 @@ def test_a_metered_provider_is_asked_only_when_named(monkeypatch: pytest.MonkeyP
     assert b"api_key" not in kept
     named = Library(MemoryStore(), http=http).search("q", providers=["serpapi"])
     assert [r["provider"] for r in named["providers"]] == ["serpapi"]
+
+
+# ------------------------------------------------------------------------------ families
+
+
+def family() -> list[Patent]:
+    """One invention published four times, as two services spell it, and one unrelated patent."""
+    return [
+        patent(
+            "WO9631087",
+            year=1996,
+            application="WO1996AU00179",
+            priorities=["US19950414656", "US19960616299"],
+        ),
+        patent(
+            "EP0818123",
+            year=1998,
+            application="EP19960907216",
+            priorities=["US19950414656", "US19960616299"],
+        ),
+        patent("US5545219", year=1996, application="US19950414656", priorities=["US19950414656"]),
+        patent("CA2216703", year=1996, priorities=["US 1995/0414656", "US19960616299P"]),
+        patent("WO0112115", year=2001, application="WO2000CA00942", priorities=["US19990148809"]),
+    ]
+
+
+def test_publications_of_one_invention_are_one_hit() -> None:
+    lib = make_library(search_providers=[FakeProvider(hits=family())])
+    res = lib.search("modiolus hugging electrode")
+    assert [h["id"] for h in res["hits"]] == ["US5545219", "WO0112115"]
+    assert (res["collapsed"], res["filtered_out"]) == (3, 0)
+    first, second = res["hits"]
+    # Joined through any shared priority, read past punctuation and a trailing kind letter.
+    assert [m["id"] for m in first["also_published_as"]] == ["WO9631087", "EP0818123", "CA2216703"]
+    assert first["also_published_as"][0] == {
+        "id": "WO9631087",
+        "kind": None,
+        "year": 1996,
+        "url": None,
+        "found_by": ["fake"],
+        "in_library": False,
+    }
+    assert second["also_published_as"] == []
+    every = lib.search("modiolus hugging electrode", families=False)
+    assert (len(every["hits"]), every["collapsed"]) == (5, 0)
+    assert "also_published_as" not in every["hits"][0]
+
+
+def test_the_publication_kept_is_one_already_held_then_by_office_then_the_latest() -> None:
+    hits = family()[:3]
+    lib = make_library(search_providers=[FakeProvider(hits=hits)])
+    assert lib.search("x")["hits"][0]["id"] == "US5545219"  # US before EP before WO
+    two_us = [*hits, patent("US6000000", year=1999, priorities=["US19950414656"])]
+    lib = make_library(search_providers=[FakeProvider(hits=two_us)])
+    assert lib.search("x")["hits"][0]["id"] == "US6000000"  # the later one: the grant
+    lib = make_library(
+        search_providers=[FakeProvider(hits=hits)],
+        providers=[FakeProvider(doc=full_doc("WO9631087"))],
+    )
+    lib.fetch("WO9631087")
+    kept = lib.search("x")["hits"][0]
+    assert (kept["id"], kept["full_text_in_library"]) == ("WO9631087", True)  # the one we can read
+
+
+def test_a_filter_applies_to_publications_before_they_are_grouped() -> None:
+    lib = make_library(search_providers=[FakeProvider(hits=family())])
+    res = lib.search("x", countries=["EP", "WO"])
+    assert [h["id"] for h in res["hits"]] == ["EP0818123", "WO0112115"]
+    assert [m["id"] for m in res["hits"][0]["also_published_as"]] == ["WO9631087"]
+    assert (res["filtered_out"], res["collapsed"]) == (2, 1)
+
+
+def test_hits_with_nothing_to_join_on_stay_apart() -> None:
+    hits = [patent("EP1000001"), patent("EP1000002"), patent("EP1000003", priorities=["12"])]
+    lib = make_library(search_providers=[FakeProvider(hits=hits)])
+    assert lib.search("x")["collapsed"] == 0
+
+
+def test_a_new_publication_of_a_seen_invention_is_not_new_to_a_collection() -> None:
+    provider = FakeProvider(hits=family()[:1])  # only the WO application so far
+    lib = make_library(search_providers=[provider])
+    lib.create_collection("hearing", queries=["modiolus hugging electrode"])
+    assert [h["id"] for h in lib.sweep("hearing")["new"]] == ["WO9631087"]
+    lib.collect("hearing", ["WO9631087"])
+    provider.hits = family()  # later the US grant appears, and an unrelated patent
+    second = lib.sweep("hearing")
+    assert [h["id"] for h in second["new"]] == ["WO0112115"]
+    us = lib.search("modiolus hugging electrode", collection="hearing")["hits"][0]
+    assert (us["id"], us["new"], us["member"]) == ("US5545219", False, True)
+    assert lib.collection("hearing")["seen"] == 5  # every publication is recorded
 
 
 # --------------------------------------------------------------------------- collections

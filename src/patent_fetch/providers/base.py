@@ -83,6 +83,10 @@ class Patent:
     #: ISO dates keyed `priority`, `filing`, `publication`, `grant`: only those the provider gave.
     dates: dict[str, str] = field(default_factory=dict)
     classifications: list[str] = field(default_factory=list)  # CPC or IPC symbols
+    application: str | None = None  # the application number, as the provider spells it
+    #: Numbers of the applications this one claims priority from, as the provider spells them.
+    #: Publications that share one are publications of the same invention (see library.py).
+    priorities: list[str] = field(default_factory=list)
     status: str | None = None  # the provider's wording, not a legal conclusion
     url: str | None = None  # a page a person can open
     cites: list[str] = field(default_factory=list)  # publication numbers this one cites

@@ -44,6 +44,10 @@ area you work in.
   $ patent-fetch sweep hearing                 # next month: only what has appeared since
   ```
 
+- **One entry per invention.** An invention is usually published several times: an application,
+  its grant, the same filing at other offices. Publications that share a priority are folded into
+  one hit, with the others listed under it (`also published as ...`), so one patent family does
+  not fill the results. `--all-publications` lists each separately.
 - **It is not a legal opinion.** A search shows what the enabled providers matched for these words
   on this day. No hits is not evidence that no patent exists, and nothing here says whether you
   are free to operate, whether a patent is valid, or whether it is in force: those turn on the

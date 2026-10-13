@@ -71,7 +71,7 @@ lib = Library.default()
 
 | call | network | returns |
 |---|---|---|
-| `lib.search(query, limit=10, also=(), countries=None, since=None, collection=None, refresh=False)` | yes, cached 7 days | `{"query", "hits", "filtered_out", "providers", "broken"}` |
+| `lib.search(query, limit=10, also=(), countries=None, since=None, collection=None, refresh=False, families=True)` | yes, cached 7 days | `{"query", "hits", "filtered_out", "collapsed", "providers", "broken"}` |
 | `lib.fetch(number, force=False, collection=None)` | only if not held | the catalogue row, with `from`: `library` or `retrieved` |
 | `lib.text(number)`, `lib.claims(number)` | no | stored text; raises `NotFound` if not held or held without it |
 | `lib.record(number)` | no | `{"patent": {...}, "provenance": {...}}`: every field, every route tried |
@@ -83,8 +83,16 @@ lib = Library.default()
 | `lib.status()`, `lib.paused()` | no | what is held, which providers are on or being left alone |
 
 A hit is `{"id", "kind", "title", "abstract", "year", "applicants", "inventors", "dates",
-"classifications", "status", "url", "cites", "cited_by", "extra", "found_by", "in_library",
-"full_text_in_library"}`, plus `new` and `member` when the search was made for a collection.
+"classifications", "application", "priorities", "status", "url", "cites", "cited_by", "extra",
+"found_by", "in_library", "full_text_in_library", "also_published_as"}`, plus `new` and `member`
+when the search was made for a collection.
+
+**A hit is one invention, not one publication.** Publications that share a priority are folded
+into one hit; `also_published_as` lists the others as `{"id", "kind", "year", "url", "found_by",
+"in_library"}`, and the result's `collapsed` counts them. If you merge hits from several searches
+yourself, treat a hit as already shown when its `id` or any `also_published_as` id was: two
+searches can keep different publications of the same family. `families=False` returns every
+publication as its own hit, without `also_published_as`.
 
 **Read `providers` before reading `hits`.** Each entry is `{"provider", "status", "hits"}` with
 `status` one of `ok`, `cache`, `skipped` (no key), `unavailable` (an outside problem: try later)

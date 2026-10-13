@@ -81,13 +81,14 @@ class EuropePMC(Provider):
         filed = (details.get("application") or {}).get("applicationDate")
         if filed:
             dates["filing"] = filed
+        # No priority DATE is taken: Europe PMC's `priorityDate` repeats the application date on
+        # every priority (US7272449 claims Australian applications of 2000 and gives each the
+        # date 2003-11-13, its own filing date). The priority NUMBERS are right.
         priorities = [
-            p["priorityDate"]
+            p["priorityNumber"]
             for p in (details.get("priorityList") or {}).get("priority", [])
-            if p.get("priorityDate")
+            if p.get("priorityNumber")
         ]
-        if priorities:
-            dates["priority"] = min(priorities)
         classes = [
             c["classification"]
             for c in (details.get("classifierList") or {}).get("classifier", [])
@@ -109,6 +110,8 @@ class EuropePMC(Provider):
             ],
             dates=dates,
             classifications=list(dict.fromkeys(classes)),
+            application=(details.get("application") or {}).get("applicationNumber"),
+            priorities=list(dict.fromkeys(priorities)),
             url=f"https://europepmc.org/article/PAT/{row['id']}",
         )
 
@@ -203,6 +206,7 @@ class GooglePatents(Provider):
             inventors=_all(page, r'<dd itemprop="inventor" repeat>(.*?)</dd>'),
             dates=dates,
             classifications=list(dict.fromkeys(classes)),
+            application=_first(page, r'<dd itemprop="applicationNumber">([^<]+)<'),
             status=_first(page, r'<span itemprop="ifiStatus">([^<]+)</span>'),
             url=url,
             cites=self._references(page, "backwardReferences"),
@@ -211,7 +215,6 @@ class GooglePatents(Provider):
                 k: v
                 for k, v in (
                     ("pdf", _first(page, r'<meta name="citation_pdf_url" content="([^"]+)"')),
-                    ("application", _first(page, r'<dd itemprop="applicationNumber">([^<]+)<')),
                     (
                         "current_assignee",
                         _first(page, r'<dd itemprop="assigneeCurrent" repeat>(.*?)</dd>'),

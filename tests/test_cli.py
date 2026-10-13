@@ -84,6 +84,7 @@ def test_search_prints_statuses_hits_and_the_caveat(capsys: pytest.CaptureFixtur
     assert "  fake             ok             2 hits" in out
     assert "  down             unavailable    0 hits  HTTP 503" in out
     assert "1 distinct patents (1 filtered out)" in out
+    assert "also published as" not in out
     assert f" ■  {EP}" in out
     assert "(CHAPA FERNANDO) [fake]" in out
     assert "No hits is not evidence" in out
@@ -99,6 +100,21 @@ def test_search_prints_statuses_hits_and_the_caveat(capsys: pytest.CaptureFixtur
     assert "Traceback" in run(["problems", "--trace", "-n", "1"], capsys)[1]
     assert json.loads(run(["--json", "problems"], capsys)[1])[0]["provider"] == "buggy"
     assert str(problems.log_path()) in out
+
+
+def test_search_folds_publications_of_one_invention(capsys: pytest.CaptureFixture[str]) -> None:
+    hits = [
+        patent("US5545219", year=1996, priorities=["US19950414656"]),
+        patent("EP0818123", year=1998, priorities=["US19950414656", "US19960616299"]),
+    ]
+    lib = make_library(search_providers=[FakeProvider(hits=hits)])
+    _, out, _ = run(["search", "electrode"], capsys, lib)
+    assert "1 distinct patents (1 further publications of the same inventions folded in)" in out
+    assert "    US5545219" in out
+    assert "      also published as EP0818123\n" in out
+    _, out, _ = run(["search", "electrode", "--all-publications"], capsys, lib)
+    assert "2 distinct patents\n" in out
+    assert "also published as" not in out
 
 
 def test_collections_and_sweep(capsys: pytest.CaptureFixture[str]) -> None:

@@ -78,7 +78,9 @@ def test_europepmc_search_reads_a_recorded_answer() -> None:
     assert first.title.startswith("METHODS AND SYSTEMS FOR FITTING")
     assert first.applicants == ["ADVANCED BIONICS AG"]
     assert first.inventors[0] == "CHAPA FERNANDO"
-    assert first.dates == {"filing": "2011-07-28", "priority": "2011-07-28"}
+    # Europe PMC's priorityDate repeats the filing date, so no priority date is taken from it.
+    assert first.dates == {"filing": "2011-07-28"}
+    assert (first.application, first.priorities) == ("WO2011US45674", ["US20100847099"])
     assert "A61N1/36" in first.classifications
     assert first.url == "https://europepmc.org/article/PAT/WO2012016009"
 
@@ -135,7 +137,7 @@ def test_google_patents_reads_a_recorded_page() -> None:
     assert p.cites[:2] == ["US3835848A", "US4274402A"]
     assert p.cited_by[0] == "US20100042139A1"
     assert p.extra["pdf"].endswith("US7861317.pdf")
-    assert p.extra["application"] == "US10/962,874"
+    assert (p.application, p.priorities) == ("US10/962,874", [])
     assert p.abstract
     assert p.abstract.startswith("A nose cover or nose protector")
     assert doc.description
@@ -199,6 +201,8 @@ def test_epo_ops_search_reads_a_recorded_answer(monkeypatch: pytest.MonkeyPatch)
     }
     assert first.classifications == ["A61N1/0541", "A61N1/36039"]
     assert first.extra == {"family": "96661441"}
+    assert first.application == "US202519047123"
+    assert first.priorities == ["US202463551349P", "US202519047123"]  # itself among them
     assert first.abstract
     assert first.abstract.startswith("A cochlear implant includes first and second ground")
     # Its four citations name applications (provisionals), which are not publications.
@@ -317,6 +321,7 @@ def test_lens_search_and_lookup_from_the_documented_shape(
     assert hit.classifications == ["A61N1/36038", "H04R25/70"]
     assert hit.cites == ["US7861317"]
     assert hit.url == "https://www.lens.org/lens/patent/031-156-664-106-437"
+    assert (hit.application, hit.priorities) == ("US201113192539", ["US36937010"])
 
     doc = Lens(http).lookup(normalize("US20120029596A1"))
     terms = json.loads(http.posts[1][1])["query"]["bool"]["must"]

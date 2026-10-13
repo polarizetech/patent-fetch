@@ -103,6 +103,71 @@ def _fill(base: dict[str, Any], other: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+def _family_keys(row: dict[str, Any]) -> set[str]:
+    """What joins a publication to others of the same invention: the applications it claims
+    priority from, and its own application. Spelling differences that are only punctuation or a
+    trailing kind letter (`US202463551349P`) are ignored; anything else is left to differ, so two
+    services that spell a number differently fail to join rather than join wrongly."""
+    numbers = [*(row.get("priorities") or []), row.get("application") or ""]
+    keys = {re.sub(r"(?<=\d)[A-Z]$", "", re.sub(r"[^0-9A-Z]", "", n.upper())) for n in numbers}
+    return {k for k in keys if len(k) >= 6}
+
+
+_OFFICE_ORDER = {"US": 0, "EP": 1, "WO": 2}
+
+
+def _collapse(hits: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One entry per invention: hits that share a priority (or are each other's priority) are
+    grouped, one is kept, and the rest are listed under its `also_published_as`.
+
+    This is the EXTENDED family, joined through any shared priority, not the EPO's stricter
+    "simple family" of identical priority sets: a US patent and the EP application that claims it
+    plus one more priority are different simple families and the same invention to a reader. The
+    cost is that a continuation-in-part or a divisional, whose claims differ, folds into its
+    parent. Nothing is discarded: every publication is still named, with its own link.
+
+    The one kept is a publication already held with its text, else held, else US, EP, WO, then
+    any other office, and the latest of those: the latest is the grant where there is one.
+    """
+    parent = list(range(len(hits)))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    owner: dict[str, int] = {}
+    for i, hit in enumerate(hits):
+        for key in _family_keys(hit):
+            if key in owner:
+                parent[find(i)] = find(owner[key])
+            else:
+                owner[key] = i
+    groups: dict[int, list[dict[str, Any]]] = {}
+    for i, hit in enumerate(hits):
+        groups.setdefault(find(i), []).append(hit)
+
+    out = []
+    for members in groups.values():
+        best = min(
+            members,
+            key=lambda h: (
+                not h["full_text_in_library"],
+                not h["in_library"],
+                _OFFICE_ORDER.get(h["id"][:2], 3),
+                -(h.get("year") or 0),
+            ),
+        )
+        best["also_published_as"] = [
+            {k: h.get(k) for k in ("id", "kind", "year", "url", "found_by", "in_library")}
+            for h in members
+            if h is not best
+        ]
+        out.append(best)
+    return out
+
+
 class Library:
     def __init__(
         self,
@@ -419,6 +484,7 @@ class Library:
         countries: Sequence[str] | None = None,
         since: int | None = None,
         collection: str | None = None,
+        families: bool = True,
     ) -> dict[str, Any]:
         """Ask every search provider and merge what answers.
 
@@ -428,10 +494,15 @@ class Library:
         it cannot be shown to be older. With `collection`, each hit says whether that collection
         has `seen` it or lists it as a `member`, and every hit is recorded as seen.
 
-        Returns `{"query", "hits", "filtered_out", "providers", "broken"}`. Each provider reports
-        `ok`, `cache`, `skipped` (no key), `unavailable` (an outside problem) or `error` (a
-        defect, also listed in `broken`). **Read the statuses before reading "no hits" as "no
-        patents".**
+        One invention is usually published several times (an application, its grant, the same
+        filing at other offices). With `families` (the default) those are one hit, with the other
+        publications named in its `also_published_as`; see `_collapse` for how they are joined
+        and which one is kept. `families=False` returns every publication as its own hit.
+
+        Returns `{"query", "hits", "filtered_out", "collapsed", "providers", "broken"}`. Each
+        provider reports `ok`, `cache`, `skipped` (no key), `unavailable` (an outside problem) or
+        `error` (a defect, also listed in `broken`). **Read the statuses before reading "no hits"
+        as "no patents".**
         """
         if not query.strip():
             raise ValueError("an empty query would match everything; give some words")
@@ -473,10 +544,14 @@ class Library:
             hits_out.append(row)
         # Hits more than one provider found come first; within that, provider order is kept.
         hits_out.sort(key=lambda r: -len(r["found_by"]))
+        publications = len(hits_out)
+        if families:
+            hits_out = _collapse(hits_out)
         result: dict[str, Any] = {
             "query": query,
             "hits": hits_out,
-            "filtered_out": len(merged) - len(hits_out),
+            "filtered_out": len(merged) - publications,
+            "collapsed": publications - len(hits_out),
             "providers": reports,
             "broken": broken,
         }
@@ -615,13 +690,19 @@ class Library:
         return self.collection(name)
 
     def _note_seen(self, name: str, hits: list[dict[str, Any]]) -> None:
-        """Mark each hit `new`/`member` for this collection, then record all of them as seen."""
+        """Mark each hit `new`/`member` for this collection, then record all of them as seen.
+
+        A hit that stands for a family is new only if NO publication of the family was seen
+        before: the grant of an application already seen is the same invention, not a new one.
+        Every publication of the family is recorded as seen."""
         with self._lock:
             c = self._load_collection(name)
             for hit in hits:
-                hit["new"] = hit["id"] not in c["seen"]
-                hit["member"] = hit["id"] in c["members"]
-                c["seen"].setdefault(hit["id"], _now())
+                ids = [hit["id"], *(m["id"] for m in hit.get("also_published_as", []))]
+                hit["new"] = not any(i in c["seen"] for i in ids)
+                hit["member"] = any(i in c["members"] for i in ids)
+                for i in ids:
+                    c["seen"].setdefault(i, _now())
             if hits:
                 self._put_json(self._collection_key(name), c)
 

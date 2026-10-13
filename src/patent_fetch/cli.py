@@ -57,6 +57,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--collection", help="mark hits new to this collection, and record them seen")
     p.add_argument("-n", type=int, default=10, help="hits per provider")
     p.add_argument("--refresh", action="store_true", help="ignore cached answers")
+    p.add_argument(
+        "--all-publications",
+        action="store_true",
+        help="list every publication, instead of one entry per invention",
+    )
 
     p = sub.add_parser("fetch", help="get patents into the library")
     p.add_argument("ids", nargs="+")
@@ -116,7 +121,9 @@ def _hit_line(h: dict[str, Any]) -> str:
     new = "+" if h.get("new") else " "
     found = ",".join(h.get("found_by", []))
     title = " ".join((h.get("title") or "").split())[:64]
-    return f" {_flag(h)}{new} {h['id']:16s} {h.get('year') or '':4} {title}  ({_who(h)}) [{found}]"
+    line = f" {_flag(h)}{new} {h['id']:16s} {h.get('year') or '':4} {title}  ({_who(h)}) [{found}]"
+    others = [m["id"] for m in h.get("also_published_as", [])]
+    return line + (f"\n      also published as {', '.join(others)}" if others else "")
 
 
 def _provider_lines(reports: list[dict[str, Any]]) -> None:
@@ -143,15 +150,21 @@ def _search(lib: Library, a: argparse.Namespace) -> Any:
         countries=_split(a.country) or None,
         since=a.since,
         collection=a.collection,
+        families=not a.all_publications,
     )
     _warn_broken(res["broken"])
     if a.json:
         return res
     _provider_lines(res["providers"])
-    dropped = res["filtered_out"]
-    print(
-        f"\n{len(res['hits'])} distinct patents" + (f" ({dropped} filtered out)" if dropped else "")
-    )
+    notes = [
+        f"{n} {what}"
+        for n, what in (
+            (res["collapsed"], "further publications of the same inventions folded in"),
+            (res["filtered_out"], "filtered out"),
+        )
+        if n
+    ]
+    print(f"\n{len(res['hits'])} distinct patents" + (f" ({'; '.join(notes)})" if notes else ""))
     for h in res["hits"]:
         print(_hit_line(h))
     print(LEGEND)

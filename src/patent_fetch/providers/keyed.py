@@ -248,6 +248,16 @@ class EpoOps(Provider):
             if d.get("document-id-type") == "docdb"
         ]
         abstract = _english(list(_find(doc, "abstract")))
+
+        def epodoc(*path: str) -> list[str]:
+            return _unique(
+                [
+                    _txt(next(_find(d, "doc-number"), None))
+                    for d in _find(doc, *path, "document-id")
+                    if d.get("document-id-type") == "epodoc"
+                ]
+            )
+
         return Patent(
             id=pid.key,
             provider=self.name,
@@ -259,6 +269,8 @@ class EpoOps(Provider):
             inventors=names("inventors", "inventor"),
             dates=dates,
             classifications=_unique(classes),
+            application=next(iter(epodoc("application-reference")), None),
+            priorities=epodoc("priority-claim"),
             url=f"https://worldwide.espacenet.com/patent/search?q=pn%3D{pid.docdb}",
             cites=_unique([p.key for p in map(number_or_none, cited) if p]),
             extra={"family": doc.get("family-id")} if doc.get("family-id") else {},
@@ -396,6 +408,17 @@ class Lens(Provider):
                 [
                     c.get("symbol")
                     for c in (biblio.get("classifications_cpc") or {}).get("classifications") or []
+                ]
+            ),
+            application="{}{}".format(
+                (biblio.get("application_reference") or {}).get("jurisdiction") or "",
+                (biblio.get("application_reference") or {}).get("doc_number") or "",
+            )
+            or None,
+            priorities=_unique(
+                [
+                    f"{c.get('jurisdiction') or ''}{c.get('doc_number') or ''}"
+                    for c in (biblio.get("priority_claims") or {}).get("claims") or []
                 ]
             ),
             status=legal.get("patent_status"),
