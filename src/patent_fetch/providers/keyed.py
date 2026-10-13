@@ -1,8 +1,8 @@
 """The providers that need an account: EPO Open Patent Services, The Lens, and SerpApi.
 
-EPO OPS was run live on 2026-10-13 and its fixtures are cut from what it sent. **The Lens and
-SerpApi have not been run against their services yet** (`verified = False`): no account was at
-hand. Each of those two is written from the service's published documentation, its fixture in
+EPO OPS and SerpApi were run live on 2026-10-13 and their fixtures are cut from what they sent.
+**The Lens has not been run against its service yet** (`verified = False`): no account was at
+hand. It is written from the service's published documentation, its fixture in
 `tests/fixtures/` is built from that documentation rather than cut from a live answer, and
 `patent-fetch providers` says so. An answer in a shape the adapter does not read raises
 `ProviderBroken`, which is logged and reported, never read as "no patents". The first live run of
@@ -442,6 +442,14 @@ class SerpApi(Provider):
 
     SerpApi takes the key as a URL parameter. Nothing here stores or logs a URL: a transport
     error is reported without it (`Provider._brief`), and a cached search holds only the hits.
+
+    **Run live 2026-10-13**, on the free plan (250 searches a month), and the documentation held:
+    the result fields, HTTP 200 with `error: "Google Patents hasn't returned any results for this
+    query."` for a search that matches nothing, and HTTP 401 `Invalid API key` for a wrong key.
+    The answer does not repeat the key anywhere. "perimodiolar electrode array" matched 140
+    records, mostly from 2011 to 2026: Google searches the full text, so it finds patents that
+    the title-and-abstract search of EPO OPS does not, and fewer of them are about the words
+    asked. Not seen, because it could not be provoked: the message for a spent allowance.
     """
 
     name = "serpapi"
@@ -449,10 +457,9 @@ class SerpApi(Provider):
     can_search = True
     needs = ("SERPAPI_API_KEY",)
     metered = True
-    verified = False
     timeout_s = 40.0
     coverage = "Google Patents' search index (100+ offices); title and snippet, no claims"
-    terms = "paid per search (serpapi.com), with a small free monthly allowance"
+    terms = "paid per search (serpapi.com); the free plan allows 250 searches a month"
     URL = "https://serpapi.com/search"
 
     def search(self, query: str, *, limit: int = 10) -> list[Patent]:
@@ -499,5 +506,7 @@ class SerpApi(Provider):
             inventors=people(row.get("inventor")),
             dates=dates,
             url=row.get("patent_link"),
-            extra={"snippet": row["snippet"]} if row.get("snippet") else {},
+            # `country_status` is Google's own word per office (ACTIVE / NOT_ACTIVE), passed on
+            # as it came: not a legal conclusion, and Google says so of its status data.
+            extra={k: row[k] for k in ("snippet", "pdf", "country_status") if row.get(k)},
         )

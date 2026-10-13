@@ -71,11 +71,11 @@ area you work in.
 | `google-patents` | | yes | none | One patent's page on Google Patents, by number: description and claims for 100+ offices. **Lookup only**; see below. |
 | `epo-ops` | yes | yes | free registration | EPO Open Patent Services: bibliographic data for 100+ offices, full text for EP, WO and some others. 4 GB a week free. |
 | `lens` | yes | yes | token | The Lens: 150M+ records with claims. Free for trial and non-commercial use; paid otherwise. |
-| `serpapi` | yes | | **paid** | Google Patents' search, through SerpApi. Opt-in per search (`--also serpapi`). |
+| `serpapi` | yes | | **paid** (free plan: 250 searches a month) | Google Patents' search, through SerpApi: full text, so broader than a title-and-abstract search. Opt-in per search (`--also serpapi`). |
 
-`europepmc`, `google-patents` and `epo-ops` have been run against their services. **`lens` and
-`serpapi` have not**: they are written from each service's documentation and marked
-`NOT YET RUN LIVE` by `patent-fetch providers` until someone with an account runs them.
+`europepmc`, `google-patents`, `epo-ops` and `serpapi` have been run against their services.
+**`lens` has not**: it is written from the service's documentation and marked `NOT YET RUN LIVE`
+by `patent-fetch providers` until someone with an account runs it.
 
 **With no account at all you can read any patent by its number, but you cannot search for recent
 ones**: the only keyless search is an archive of life-science patents that ends in 2012. To search

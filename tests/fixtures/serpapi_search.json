@@ -4,31 +4,91 @@
  },
  "search_parameters": {
   "engine": "google_patents",
-  "q": "(solar tracking)"
+  "q": "perimodiolar electrode array",
+  "num": "10"
+ },
+ "search_information": {
+  "total_results": 140,
+  "total_pages": 14,
+  "page_number": 1
  },
  "organic_results": [
   {
    "position": 1,
    "rank": 0,
-   "patent_id": "patent/EP2264377A2/en",
-   "patent_link": "https://patents.google.com/patent/EP2264377A2/en",
-   "title": "Apparatus for two-way tracing and concentrating sunlight of roof installation type",
-   "snippet": "a plurality of second open push rods which have one sides",
-   "priority_date": "2009-06-03",
-   "filing_date": "2009-12-04",
-   "publication_date": "2010-12-22",
-   "inventor": "Young Hwan Park",
-   "assignee": "Green Plus Co. Ltd.",
-   "publication_number": "EP2264377A2",
+   "patent_id": "patent/US11439811B2/en",
+   "patent_link": "https://patents.google.com/patent/US11439811B2/en",
+   "serpapi_link": "https://serpapi.com/search.json?engine=google_patents_details&patent_id=patent%2FUS11439811B2%2Fen",
+   "title": "Advanced electrode array insertion with conditioning",
+   "snippet": "A method, including obtaining information indicative of a phenomenon sensed at a read electrode of a cochlear implant electrode array relative to a reference and/or at a read electrode remote from the electrode array relative to a reference, where one of the electrodes of the cochlear implant …",
+   "priority_date": "2016-04-21",
+   "filing_date": "2017-09-18",
+   "grant_date": "2022-09-13",
+   "publication_date": "2022-09-13",
+   "inventor": "Ángel Manuel Ramos Macías",
+   "assignee": "Cochlear Limited",
+   "publication_number": "US11439811B2",
    "language": "en",
+   "pdf": "https://patentimages.storage.googleapis.com/74/cb/8c/2752f1440e6ba5/US11439811.pdf",
    "country_status": {
-    "EP": "NOT_ACTIVE",
-    "US": "NOT_ACTIVE"
+    "WO": "NOT_ACTIVE",
+    "US": "ACTIVE"
    }
   },
   {
-   "position": 2,
-   "title": "A scholar result with no publication number",
+   "position": 4,
+   "rank": 3,
+   "patent_id": "patent/US20260027353A1/en",
+   "patent_link": "https://patents.google.com/patent/US20260027353A1/en",
+   "serpapi_link": "https://serpapi.com/search.json?engine=google_patents_details&patent_id=patent%2FUS20260027353A1%2Fen",
+   "title": "Implantable stimulating assembly",
+   "snippet": "What is claimed is: 1 . A method, comprising: obtaining an implantable component; and inserting the implantable component into a recipient, wherein subsequent to the full insertion of the implantable component, the implantable component transforms from a first geometry to a second geometry without:",
+   "priority_date": "2015-10-30",
+   "filing_date": "2025-10-03",
+   "publication_date": "2026-01-29",
+   "inventor": "Nicholas Charles Pawsey",
+   "assignee": "Cochlear Limited",
+   "publication_number": "US20260027353A1",
+   "language": "en",
+   "country_status": {
+    "WO": "NOT_ACTIVE",
+    "US": "ACTIVE",
+    "CN": "ACTIVE"
+   }
+  },
+  {
+   "position": 7,
+   "rank": 6,
+   "patent_id": "patent/EP2108399B1/en",
+   "patent_link": "https://patents.google.com/patent/EP2108399B1/en",
+   "serpapi_link": "https://serpapi.com/search.json?engine=google_patents_details&patent_id=patent%2FEP2108399B1%2Fen",
+   "title": "Implantable neuro-stimulation electrode with fluid reservoir",
+   "snippet": "A cochlear implant device, comprising: - an electrode carrier (3901) provided with a plurality of electrode contacts (3904), - a fluid reservoir (3905) contained in said electrode carrier (3901) for holding a volume of therapeutic fluid, - at least one fluid delivery port (3906) for delivering the …",
+   "priority_date": "2006-07-24",
+   "filing_date": "2007-07-24",
+   "grant_date": "2015-09-09",
+   "publication_date": "2015-09-09",
+   "inventor": "Claude Jolly",
+   "assignee": "MED-EL Elektromedizinische Geräte GmbH",
+   "publication_number": "EP2108399B1",
+   "language": "en",
+   "pdf": "https://patentimages.storage.googleapis.com/c2/e0/2d/17d47c395eb7bd/EP2108399B1.pdf",
+   "country_status": {
+    "WO": "NOT_ACTIVE",
+    "EP": "ACTIVE",
+    "US": "ACTIVE",
+    "CN": "ACTIVE",
+    "JP": "ACTIVE",
+    "KR": "ACTIVE",
+    "AR": "ACTIVE",
+    "AU": "ACTIVE",
+    "CA": "ACTIVE",
+    "RU": "ACTIVE"
+   }
+  },
+  {
+   "position": 99,
+   "title": "A result with no publication number",
    "is_scholar": true
   }
  ]

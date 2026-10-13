@@ -292,6 +292,13 @@ def test_an_unavailable_provider_is_left_alone_then_asked_again(
     assert lib.paused() == {"down": "not asked for this process, after: allowance spent"}
 
 
+def test_an_adapter_never_run_live_says_so_in_its_report(monkeypatch: pytest.MonkeyPatch) -> None:
+    untested = FakeProvider(hits=[patent()])
+    monkeypatch.setattr(untested, "verified", False, raising=False)
+    report = make_library(search_providers=[untested]).search("x")["providers"][0]
+    assert report["note"] == "adapter not yet verified against the live service"
+
+
 def test_a_metered_provider_is_asked_only_when_named(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("SERPAPI_API_KEY", "k")
     http = FakeHttp({"serpapi.com/search": J(fixture("serpapi_search.json"))})
@@ -305,12 +312,12 @@ def test_a_metered_provider_is_asked_only_when_named(monkeypatch: pytest.MonkeyP
         ("fake", "ok"),
         ("serpapi", "ok"),
     ]
-    assert res["providers"][1]["note"] == "adapter not yet verified against the live service"
+    assert "note" not in res["providers"][1]  # run live: nothing to warn of
     lib.search("z", also=["serpapi"])
     assert len(lib._opted) == 1  # built once, so its pacing and any session are reused
     # The key travels in the URL, so nothing kept from the search may contain it.
     kept = b"".join(lib.store.get(k) for k in lib.store.keys("patents/"))
-    assert b"EP2264377" in kept
+    assert b"EP2108399" in kept
     assert b"api_key" not in kept
     named = Library(MemoryStore(), http=http).search("q", providers=["serpapi"])
     assert [r["provider"] for r in named["providers"]] == ["serpapi"]

@@ -80,25 +80,25 @@ named in the search set (or the reverse) also raises.
 | `google-patents` | — never | description + claims | — | **yes** | One `/patent/<number>/en` page per lookup, 2 s apart. US7861317B2, WO2012016009A1 and EP2264377A2 each returned description and claims in English; an unknown number answered 404; a number without a kind code is served the latest publication. |
 | `epo-ops` | ✓ CQL | biblio + description + claims (EP, WO, some others) | free registration | **yes, 2026-10-13** | Anonymous search answered 403 "violation of Fair Use policy". With a key: `ta all "cochlear implant electrode array"` matched 270 publications, newest first (2025, 2026); EP4483941 came back with description and claims; US documents have no full text (404 `CLIENT.InvalidCountryCode`); an empty search is 404 `SERVER.EntityNotFound`; the token lasts 1,199 s. |
 | `lens` | ✓ | record + claims + description | token | **no** | Anonymous request answered 401 "Missing/Incorrect Authorization Header". Everything else is from the documentation. |
-| `serpapi` | ✓ **opt-in** | — | paid | **no** | Google Patents' search through SerpApi's `google_patents` engine. Written from its documentation page. |
+| `serpapi` | ✓ **opt-in** | — | paid; free plan 250 searches a month | **yes, 2026-10-13** | Google Patents' search through SerpApi's `google_patents` engine. "perimodiolar electrode array" matched 140 records, mostly 2011 to 2026: it searches full text, so it finds patents OPS's title-and-abstract search does not, and more that are only loosely about the words. An empty search is HTTP 200 with an `error` sentence; a wrong key is 401. |
 
 ### `verified = False` means exactly that
 
-`lens` and `serpapi` were written without an account. Their fixtures (`lens_search.json`,
-`serpapi_search.json`) are **built from the published documentation, not cut from a live answer**,
-so their tests prove the adapter reads the shape the documentation describes and nothing more.
-`Provider.verified` is False for each, which `patent-fetch providers` prints as
-`NOT YET RUN LIVE` and a search report carries as a `note`.
+`lens` was written without an account. Its fixture (`lens_search.json`) is **built from the
+published documentation, not cut from a live answer**, so its tests prove the adapter reads the
+shape the documentation describes and nothing more. `Provider.verified` is False for it, which
+`patent-fetch providers` prints as `NOT YET RUN LIVE` and a search report carries as a `note`.
 
 **The first time one is run with a real key:** replace its fixture with a (trimmed) real answer,
 fix what breaks, set `verified = True`, and add a dated line under "Honest status" saying what the
 live service did differently. The points most likely to be wrong: Lens's `query_string` field
-names (`title`, `abstract`, `claim`), its `include` list, and the `doc_number` term used for
-lookup; SerpApi's error strings.
+names (`title`, `abstract`, `claim`), its `include` list, the `doc_number` term used for
+lookup, and how it spells priority numbers (families are joined on them).
 
 `epo-ops` went through exactly that on 2026-10-13: its three fixtures (`epo_ops_search.xml`,
 `epo_ops_biblio.xml`, `epo_ops_claims.xml`, plus a description cut to its first paragraphs) are
-real answers, and the one defect the live run showed is fixed and tested (below).
+real answers, and the one defect the live run showed is fixed and tested (below). `serpapi`
+followed the same day and needed no fix; its fixture is three results of a real answer.
 
 ### Google Patents: the page, never the search
 
@@ -277,7 +277,16 @@ bucket can hold this library beside paper-fetch's `papers/`.
   search of two records, 68 kB for one description, against 4 GB a week.
 - **Run through the research pipeline (2026-10-13):** see the gateway repository's run log; the
   companion there calls `patent-fetch --json search` and prints the hits.
-- **Not run live:** `lens`, `serpapi` (no account), and the S3 store **in this
+- **Run live (2026-10-13):** `serpapi`, on the free plan: a search named alone, one added with
+  `--also`, one that matches nothing, and a wrong key. The documentation held throughout and the
+  adapter needed no change. The answer never repeats the key, and nothing a search stored
+  contained it (checked by reading the store back). Two fields the adapter did not keep are now
+  in `extra`: `pdf`, and `country_status`, Google's ACTIVE / NOT_ACTIVE per office, passed on as
+  it came. **Not seen:** the message for a spent allowance, which could not be provoked; the
+  adapter matches "run out of searches" from the documentation. SerpApi's hits carry no
+  application or priority number, so they join a family only when another provider returned the
+  same publication.
+- **Not run live:** `lens` (no account), and the S3 store **in this
   repository** (it is paper-fetch's `S3Store` with the prefix changed, and its tests use a fake
   client).
 - **Search filters are applied after merging.** `countries` and `since` drop hits from what the

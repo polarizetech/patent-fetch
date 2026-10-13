@@ -47,7 +47,7 @@ def test_a_typo_raises_instead_of_shrinking_the_search() -> None:
 def test_describe_says_what_is_untested_and_what_is_paid(monkeypatch: pytest.MonkeyPatch) -> None:
     rows = {d["name"]: d for d in describe(FakeHttp())}
     assert set(rows) == set(REGISTRY)
-    assert [n for n, d in rows.items() if not d["verified"]] == ["lens", "serpapi"]
+    assert [n for n, d in rows.items() if not d["verified"]] == ["lens"]
     assert [n for n, d in rows.items() if d["metered"]] == ["serpapi"]
     assert rows["epo-ops"]["available"] is False
     assert rows["epo-ops"]["why"] == "needs EPO_OPS_KEY, EPO_OPS_SECRET"
@@ -352,18 +352,37 @@ def test_lens_unknown_number_and_refused_token(monkeypatch: pytest.MonkeyPatch) 
 # ------------------------------------------------------------------------------- SerpApi
 
 
-def test_serpapi_search_from_the_documented_shape(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_serpapi_search_reads_a_recorded_answer(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("SERPAPI_API_KEY", "paid-key")
     http = FakeHttp({"serpapi.com/search": J(fixture("serpapi_search.json"))})
-    (hit,) = SerpApi(http).search("solar tracking", limit=3)
-    assert "engine=google_patents&q=solar+tracking&num=10&api_key=paid-key" in http.log[0]
-    assert (hit.id, hit.kind, hit.year) == ("EP2264377", "A2", 2010)
-    assert hit.applicants == ["Green Plus Co. Ltd."]
-    assert hit.inventors == ["Young Hwan Park"]
-    assert hit.dates["priority"] == "2009-06-03"
-    assert hit.url == "https://patents.google.com/patent/EP2264377A2/en"
-    assert hit.extra["snippet"].startswith("a plurality")
-    assert "paid-key" not in json.dumps(hit.to_json())
+    hits = SerpApi(http).search("perimodiolar electrode array", limit=3)
+    assert (
+        "engine=google_patents&q=perimodiolar+electrode+array&num=10&api_key=paid-key"
+        in http.log[0]
+    )
+    assert [(h.id, h.kind, h.year) for h in hits] == [
+        ("US11439811", "B2", 2022),
+        ("US20260027353", "A1", 2026),
+        ("EP2108399", "B1", 2015),
+    ]  # the result with no publication number is dropped
+    granted, application, _ = hits
+    assert granted.title == "Advanced electrode array insertion with conditioning"
+    assert granted.applicants == ["Cochlear Limited"]
+    assert granted.inventors == ["Ángel Manuel Ramos Macías"]
+    assert granted.dates == {
+        "priority": "2016-04-21",
+        "filing": "2017-09-18",
+        "publication": "2022-09-13",
+        "grant": "2022-09-13",
+    }
+    assert "grant" not in application.dates
+    assert granted.url == "https://patents.google.com/patent/US11439811B2/en"
+    assert granted.extra["snippet"].startswith("A method, including obtaining information")
+    assert granted.extra["pdf"].endswith("US11439811.pdf")
+    assert granted.extra["country_status"] == {"WO": "NOT_ACTIVE", "US": "ACTIVE"}
+    assert (granted.application, granted.priorities) == (None, [])  # nothing to join a family on
+    assert "paid-key" not in json.dumps([h.to_json() for h in hits])
+    assert len(SerpApi(http).search("perimodiolar electrode array", limit=1)) == 1
 
 
 def test_serpapi_failures(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -372,6 +391,7 @@ def test_serpapi_failures(monkeypatch: pytest.MonkeyPatch) -> None:
     def ask(answer: object, status: int = 200) -> list[object]:
         return list(SerpApi(FakeHttp({"serpapi.com": J(answer, status)})).search("x"))
 
+    # The two refusals below are the service's own words, recorded 2026-10-13.
     assert ask({"error": "Google Patents hasn't returned any results for this query."}) == []
     with pytest.raises(ProviderUnavailable, match="run out of searches") as e:
         ask({"error": "Your account has run out of searches."})
@@ -379,7 +399,12 @@ def test_serpapi_failures(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(ProviderBroken, match="Unsupported"):
         ask({"error": "Unsupported `num` parameter."})
     with pytest.raises(ProviderBroken, match="refused SERPAPI_API_KEY"):
-        ask({"error": "Invalid API key."}, 401)
+        ask(
+            {
+                "error": "Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key"
+            },
+            401,
+        )
     with pytest.raises(ProviderUnavailable) as e:
         SerpApi(DeadHttp()).search("x")
     assert "paid-key" not in str(e.value)

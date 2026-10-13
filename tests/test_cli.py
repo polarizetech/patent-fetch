@@ -170,7 +170,7 @@ def test_providers_lists_what_is_off_paid_and_untested(capsys: pytest.CaptureFix
     assert "  google-patents   lookup         ready" in out
     assert "  epo-ops          search+lookup  off (needs EPO_OPS_KEY, EPO_OPS_SECRET)\n" in out
     assert "off (needs LENS_API_TOKEN)  NOT YET RUN LIVE" in out
-    assert "off (needs SERPAPI_API_KEY)  PAID, opt-in  NOT YET RUN LIVE" in out
+    assert "  serpapi          search         off (needs SERPAPI_API_KEY)  PAID, opt-in\n" in out
     assert len(json.loads(run(["--json", "providers"], capsys)[1])) == 5
 
 
