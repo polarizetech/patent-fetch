@@ -263,6 +263,17 @@ def test_a_repeat_search_is_served_from_the_store_for_a_week() -> None:
     assert lib.search("x")["providers"][0]["status"] == "ok"  # too old: asked again
 
 
+def test_a_search_cached_under_an_older_record_shape_is_asked_again(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    provider = FakeProvider(hits=[patent()])
+    lib = make_library(search_providers=[provider])
+    lib.search("x")
+    monkeypatch.setattr("patent_fetch.library.SEARCH_CACHE_VERSION", 99)
+    assert lib.search("x")["providers"][0]["status"] == "ok"
+    assert len(provider.searches) == 2
+
+
 def test_an_unavailable_provider_is_left_alone_then_asked_again(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

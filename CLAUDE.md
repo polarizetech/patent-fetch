@@ -221,7 +221,10 @@ can still race; the per-patent records repair any row lost (`rebuild-index`). Wi
 lock covers the catalogue, collections and the pause clock, and is never held across a provider
 call.
 
-Searches are cached in the store for **7 days** (`SEARCH_TTL_DAYS`): offices publish weekly.
+Searches are cached in the store for **7 days** (`SEARCH_TTL_DAYS`): offices publish weekly. The
+cache key carries `SEARCH_CACHE_VERSION`; raise it when `Patent` gains a field a search result
+depends on. This was learned the hard way on 2026-10-13: the first search after families were
+added was served from a cache written before `priorities` existed, and folded nothing.
 
 ## Private, though patents are public
 

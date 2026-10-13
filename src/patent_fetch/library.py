@@ -61,6 +61,10 @@ Record = dict[str, Any]
 INDEX = PREFIX + "index.jsonl"
 #: A cached search is served for a week: offices publish weekly, so older is stale.
 SEARCH_TTL_DAYS = 7
+#: Part of every cached search's key. Raise it when `Patent` gains a field that a search result
+#: depends on: a search cached before `priorities` existed has none, and would never fold into a
+#: family. Older entries are then simply not found, and expire unread.
+SEARCH_CACHE_VERSION = 2
 #: A patent held without its claims is asked for again after this long (providers add full text).
 RETRY_DAYS = 30
 
@@ -566,7 +570,7 @@ class Library:
         ok, why = p.available()
         if not ok:
             return {**report, "status": "skipped", "detail": why}, []
-        digest = _sha256(json.dumps([query, limit]).encode())
+        digest = _sha256(json.dumps([SEARCH_CACHE_VERSION, query, limit]).encode())
         cache_key = f"{PREFIX}searches/{p.name}/{digest}.json"
         if not refresh and self.store.has(cache_key):
             cached = json.loads(self.store.get(cache_key))
