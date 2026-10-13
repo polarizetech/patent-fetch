@@ -69,7 +69,7 @@ area you work in.
 | `lens` | yes | yes | token | The Lens: 150M+ records with claims. Free for trial and non-commercial use; paid otherwise. |
 | `serpapi` | yes | | **paid** | Google Patents' search, through SerpApi. Opt-in per search (`--also serpapi`). |
 
-`europepmc` and `google-patents` have been run against their services. **`epo-ops`, `lens` and
+`europepmc`, `google-patents` and `epo-ops` have been run against their services. **`lens` and
 `serpapi` have not**: they are written from each service's documentation and marked
 `NOT YET RUN LIVE` by `patent-fetch providers` until someone with an account runs them.
 

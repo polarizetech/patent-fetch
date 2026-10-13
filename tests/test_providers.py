@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from conftest import DESCRIPTION, DeadHttp, FakeHttp, J, R, fixture, raw
+from conftest import DeadHttp, FakeHttp, J, R, fixture, raw
 from patent_fetch.ids import normalize
 from patent_fetch.providers import (
     REGISTRY,
@@ -47,7 +47,7 @@ def test_a_typo_raises_instead_of_shrinking_the_search() -> None:
 def test_describe_says_what_is_untested_and_what_is_paid(monkeypatch: pytest.MonkeyPatch) -> None:
     rows = {d["name"]: d for d in describe(FakeHttp())}
     assert set(rows) == set(REGISTRY)
-    assert [n for n, d in rows.items() if not d["verified"]] == ["epo-ops", "lens", "serpapi"]
+    assert [n for n, d in rows.items() if not d["verified"]] == ["lens", "serpapi"]
     assert [n for n, d in rows.items() if d["metered"]] == ["serpapi"]
     assert rows["epo-ops"]["available"] is False
     assert rows["epo-ops"]["why"] == "needs EPO_OPS_KEY, EPO_OPS_SECRET"
@@ -177,39 +177,42 @@ def ops(routes: dict[str, object], monkeypatch: pytest.MonkeyPatch) -> tuple[Epo
     return EpoOps(http), http
 
 
-def test_epo_ops_search_from_the_documented_shape(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_epo_ops_search_reads_a_recorded_answer(monkeypatch: pytest.MonkeyPatch) -> None:
     p, http = ops({"search/biblio": R(raw("epo_ops_search.xml"))}, monkeypatch)
-    hits = p.search("cochlear implant", limit=5)
+    hits = p.search("cochlear implant electrode array", limit=5)
     assert http.posts == [
         ("https://ops.epo.org/3.2/auth/accesstoken", b"grant_type=client_credentials")
     ]
     assert http.headers[0]["Authorization"] == "Basic a2V5OnNlY3JldA=="
     assert http.headers[1] == {"Authorization": "Bearer tok-1"}
-    assert "q=ta%20all%20%22cochlear%20implant%22&Range=1-5" in http.log[1]
-    assert [h.id for h in hits] == ["EP2598092", "WO2012016009"]
-    first = hits[0]
-    assert (first.kind, first.year) == ("B1", 2018)
-    assert first.title
-    assert first.title.startswith("METHODS AND SYSTEMS")
-    assert first.applicants == ["ADVANCED BIONICS AG [CH]"]
-    assert first.inventors == ["CHAPA FERNANDO [US]", "CALLE GUILLERMO A [US]"]
+    assert "q=ta%20all%20%22cochlear%20implant%20electrode%20array%22&Range=1-5" in http.log[1]
+    assert [h.id for h in hits] == ["US20250256099", "WO2025137595"]
+    first, second = hits
+    assert (first.kind, first.year) == ("A1", 2025)
+    assert first.title == "METHOD AND DEVICE FOR PROVIDING STIMULATION TO OBSTRUCTED COCHLEA"
+    assert first.applicants == ["UNIV NEW YORK [US]"]
+    assert first.inventors == ["LANDSBERGER DAVID M [US]", "ROLAND JR J THOMAS [US]"]
     assert first.dates == {
-        "priority": "2010-07-30",
-        "filing": "2011-07-28",
-        "publication": "2018-12-05",
+        "priority": "2024-02-08",
+        "filing": "2025-02-06",
+        "publication": "2025-08-14",
     }
-    assert first.classifications == ["A61N1/36038", "H04R25/70"]
-    assert first.cites == ["US20090030484"]
-    assert first.extra == {"family": "44584623"}
+    assert first.classifications == ["A61N1/0541", "A61N1/36039"]
+    assert first.extra == {"family": "96661441"}
     assert first.abstract
-    assert first.abstract.startswith("An exemplary method")
+    assert first.abstract.startswith("A cochlear implant includes first and second ground")
+    # Its four citations name applications (provisionals), which are not publications.
+    assert first.cites == []
+    assert second.cites[:2] == ["US20230320751", "US20180263705"]
+    assert first.url == "https://worldwide.espacenet.com/patent/search?q=pn%3DUS2025256099"
     p.search("pa=bionics and cpc=A61N", limit=200)  # CQL is sent as written; one token is reused
     assert "q=pa%3Dbionics%20and%20cpc%3DA61N&Range=1-100" in http.log[2]
     assert len(http.posts) == 1
 
 
 def test_epo_ops_answers_an_empty_search_with_404(monkeypatch: pytest.MonkeyPatch) -> None:
-    p, _ = ops({}, monkeypatch)
+    fault = "<fault><code>SERVER.EntityNotFound</code><message>No results found</message></fault>"
+    p, _ = ops({"search/biblio": R(fault, 404)}, monkeypatch)
     assert p.search("nothing matches this") == []
 
 
@@ -218,30 +221,39 @@ def test_epo_ops_lookup_joins_biblio_description_and_claims(
 ) -> None:
     p, _http = ops(
         {
-            "epodoc/EP2598092/biblio": R(raw("epo_ops_search.xml")),
-            "epodoc/EP2598092/description": R(raw("epo_ops_description.xml")),
-            "epodoc/EP2598092/claims": R(raw("epo_ops_claims.xml")),
+            "epodoc/EP4483941/biblio": R(raw("epo_ops_biblio.xml")),
+            "epodoc/EP4483941/description": R(raw("epo_ops_description.xml")),
+            "epodoc/EP4483941/claims": R(raw("epo_ops_claims.xml")),
         },
         monkeypatch,
     )
-    doc = p.lookup(normalize("EP2598092B1"))
+    doc = p.lookup(normalize("EP4483941A1"))
     assert doc is not None
-    assert (doc.patent.id, doc.patent.kind) == ("EP2598092", "B1")
-    assert doc.description == f"BACKGROUND\n{DESCRIPTION}"
+    assert (doc.patent.id, doc.patent.kind) == ("EP4483941", "A1")
+    assert doc.patent.applicants == ["ADVANCED BIONICS LLC [US]"]
+    assert doc.patent.classifications == ["A61N1/0541", "A61N1/36038", "A61N1/375"]
+    assert doc.description
+    assert doc.description.startswith("BACKGROUND\n1. Field\n[0001] The present disclosure")
     assert doc.claims
-    assert doc.claims.startswith("1. A method comprising")
-    assert doc.claims.count("\n") == 1
+    assert doc.claims.startswith("1. An apparatus, comprising:\na cochlear implant (100)")
     assert p.lookup(normalize("EP9999999")) is None
 
 
 def test_epo_ops_without_full_text_is_a_record_not_a_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    p, _ = ops({"epodoc/US2012029596/biblio": R(raw("epo_ops_search.xml"))}, monkeypatch)
-    doc = p.lookup(normalize("US 2012/0029596 A1"))  # asked in the EPO's ten-digit spelling
+    refusal = "<fault><code>CLIENT.InvalidCountryCode</code></fault>"  # what OPS says of US text
+    p, _http = ops(
+        {
+            "epodoc/US2025256099/biblio": R(raw("epo_ops_search.xml")),
+            "epodoc/US2025256099/": R(refusal, 404),
+        },
+        monkeypatch,
+    )
+    doc = p.lookup(normalize("US 2025/0256099 A1"))  # asked in the EPO's ten-digit spelling
     assert doc is not None
     assert not doc.has_text
-    assert doc.patent.id == "WO2012016009"  # no kind matched: the latest publication listed
+    assert doc.patent.id == "US20250256099"  # of the two records listed, the kind asked for
 
 
 def test_epo_ops_failures(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -260,12 +272,12 @@ def test_epo_ops_failures(monkeypatch: pytest.MonkeyPatch) -> None:
     assert p.lookup(normalize("EP1234567")) is None
     p, _ = ops(
         {
-            "epodoc/EP2598092/biblio": R(raw("epo_ops_search.xml")),
-            "epodoc/EP2598092/claims": R(b"<empty/>"),
+            "epodoc/EP4483941/biblio": R(raw("epo_ops_biblio.xml")),
+            "epodoc/EP4483941/claims": R(b"<empty/>"),
         },
         monkeypatch,
     )
-    doc = p.lookup(normalize("EP2598092"))
+    doc = p.lookup(normalize("EP4483941"))
     assert doc is not None
     assert doc.claims is None
 

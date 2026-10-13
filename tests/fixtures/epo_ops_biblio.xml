@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ops:world-patent-data xmlns="http://www.epo.org/exchange" xmlns:ops="http://ops.epo.org" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <exchange-documents>
+        <exchange-document system="ops.epo.org" family-id="91738829" country="EP" doc-number="4483941" kind="A1">
+            <bibliographic-data>
+                <publication-reference>
+                    <document-id document-id-type="docdb">
+                        <country>EP</country>
+                        <doc-number>4483941</doc-number>
+                        <kind>A1</kind>
+                        <date>20250101</date>
+                    </document-id>
+                    <document-id document-id-type="epodoc">
+                        <doc-number>EP4483941</doc-number>
+                        <date>20250101</date>
+                    </document-id>
+                </publication-reference>
+                <classifications-ipcr>
+                    <classification-ipcr sequence="1">
+                        <text>A61N   1/    05            A I                    </text>
+                    </classification-ipcr>
+                    <classification-ipcr sequence="2">
+                        <text>A61N   1/    36            A I                    </text>
+                    </classification-ipcr>
+                    <classification-ipcr sequence="3">
+                        <text>A61N   1/   375            A I                    </text>
+                    </classification-ipcr>
+                </classifications-ipcr>
+                <patent-classifications>
+                    <patent-classification sequence="1">
+                        <classification-scheme office="EP" scheme="CPCI"/>
+                        <section>A</section>
+                        <class>61</class>
+                        <subclass>N</subclass>
+                        <main-group>1</main-group>
+                        <subgroup>0541</subgroup>
+                        <classification-value>I</classification-value>
+                        <generating-office>US</generating-office>
+                    </patent-classification>
+                    <patent-classification sequence="2">
+                        <classification-scheme office="EP" scheme="CPCI"/>
+                        <section>A</section>
+                        <class>61</class>
+                        <subclass>N</subclass>
+                        <main-group>1</main-group>
+                        <subgroup>0541</subgroup>
+                        <classification-value>I</classification-value>
+                        <generating-office>EP</generating-office>
+                    </patent-classification>
+                    <patent-classification sequence="3">
+                        <classification-scheme office="EP" scheme="CPCI"/>
+                        <section>A</section>
+                        <class>61</class>
+                        <subclass>N</subclass>
+                        <main-group>1</main-group>
+                        <subgroup>36038</subgroup>
+                        <classification-value>I</classification-value>
+                        <generating-office>US</generating-office>
+                    </patent-classification>
+                    <patent-classification sequence="4">
+                        <classification-scheme office="EP" scheme="CPCI"/>
+                        <section>A</section>
+                        <class>61</class>
+                        <subclass>N</subclass>
+                        <main-group>1</main-group>
+                        <subgroup>36038</subgroup>
+                        <classification-value>I</classification-value>
+                        <generating-office>EP</generating-office>
+                    </patent-classification>
+                    <patent-classification sequence="5">
+                        <classification-scheme office="EP" scheme="CPCI"/>
+                        <section>A</section>
+                        <class>61</class>
+                        <subclass>N</subclass>
+                        <main-group>1</main-group>
+                        <subgroup>375</subgroup>
+                        <classification-value>I</classification-value>
+                        <generating-office>EP</generating-office>
+                    </patent-classification>
+                </patent-classifications>
+                <application-reference doc-id="613935523">
+                    <document-id document-id-type="docdb">
+                        <country>EP</country>
+                        <doc-number>24184966</doc-number>
+                        <kind>A</kind>
+                        <date>20240627</date>
+                    </document-id>
+                    <document-id document-id-type="epodoc">
+                        <doc-number>EP20240184966</doc-number>
+                        <date>20240627</date>
+                    </document-id>
+                    <document-id document-id-type="original">
+                        <doc-number>24184966.0</doc-number>
+                    </document-id>
+                </application-reference>
+                <priority-claims>
+                    <priority-claim sequence="1" kind="national">
+                        <document-id document-id-type="docdb">
+                            <country>US</country>
+                            <doc-number>202363511622</doc-number>
+                            <kind>P</kind>
+                            <date>20230630</date>
+                        </document-id>
+                        <document-id document-id-type="epodoc">
+                            <doc-number>US202363511622P</doc-number>
+                            <date>20230630</date>
+                        </document-id>
+                        <document-id document-id-type="original">
+                            <doc-number>202363511622 P</doc-number>
+                        </document-id>
+                    </priority-claim>
+                </priority-claims>
+                <parties>
+                    <applicants>
+                        <applicant sequence="1" data-format="epodoc">
+                            <applicant-name>
+                                <name>ADVANCED BIONICS LLC [US]</name>
+                            </applicant-name>
+                        </applicant>
+                        <applicant sequence="1" data-format="original">
+                            <applicant-name>
+                                <name>Advanced Bionics LLC</name>
+                            </applicant-name>
+                        </applicant>
+                    </applicants>
+                    <inventors>
+                        <inventor sequence="1" data-format="epodoc">
+                            <inventor-name>
+                                <name>GULATI SOUMYA [US]</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="2" data-format="epodoc">
+                            <inventor-name>
+                                <name>SALVATIERRA CANDELARIA [US]</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="3" data-format="epodoc">
+                            <inventor-name>
+                                <name>PATNALA ANIL [US]</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="4" data-format="epodoc">
+                            <inventor-name>
+                                <name>SPAHR ANTHONY J [US]</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="1" data-format="original">
+                            <inventor-name>
+                                <name>Gulati, Soumya</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="2" data-format="original">
+                            <inventor-name>
+                                <name>Salvatierra, Candelaria</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="3" data-format="original">
+                            <inventor-name>
+                                <name>Patnala, Anil</name>
+                            </inventor-name>
+                        </inventor>
+                        <inventor sequence="4" data-format="original">
+                            <inventor-name>
+                                <name>Spahr, Anthony J.</name>
+                            </inventor-name>
+                        </inventor>
+                    </inventors>
+                </parties>
+                <invention-title lang="de">COCHLEAIMPLANTAT-ELEKTRODENARRAYS UND ELEKTRODENARRAY-ABDECKUNGSANORDNUNGEN ZUR VERWENDUNG DAMIT</invention-title>
+                <invention-title lang="fr">RÉSEAUX D'ÉLECTRODES D'IMPLANT COCHLÉAIRE ET ENSEMBLES DE COUVERTURE DE RÉSEAU D'ÉLECTRODES DESTINÉS À ÊTRE UTILISÉS AVEC CEUX-CI</invention-title>
+                <invention-title lang="en">COCHLEAR IMPLANT ELECTRODE ARRAYS AND ELECTRODE ARRAY COVER ASSEMBLIES FOR USE WITH THE SAME</invention-title>
+                <references-cited>
+                    <citation cited-phase="undefined" cited-by="applicant" sequence="1">
+                        <patcit dnum-type="publication number" num="1">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>US5824022</doc-number>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>US</country>
+                                <doc-number>5824022</doc-number>
+                                <kind>A</kind>
+                            </document-id>
+                        </patcit>
+                    </citation>
+                    <citation cited-phase="undefined" cited-by="applicant" sequence="2">
+                        <patcit dnum-type="publication number" num="2">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>WO2018031025</doc-number>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>WO</country>
+                                <doc-number>2018031025</doc-number>
+                                <kind>A1</kind>
+                            </document-id>
+                        </patcit>
+                    </citation>
+                    <citation cited-phase="undefined" cited-by="applicant" sequence="3">
+                        <patcit dnum-type="publication number" num="3">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>WO2018102695</doc-number>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>WO</country>
+                                <doc-number>2018102695</doc-number>
+                                <kind>A2</kind>
+                            </document-id>
+                        </patcit>
+                    </citation>
+                    <citation cited-phase="national-search-report" cited-by="examiner" sequence="1">
+                        <patcit dnum-type="publication number" num="1">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>US7050858</doc-number>
+                                <name>KUZMA JANUSZ A [US] ET AL</name>
+                                <date>20060523</date>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>US</country>
+                                <doc-number>7050858</doc-number>
+                                <kind>B1</kind>
+                                <name>KUZMA JANUSZ A [US] ET AL</name>
+                                <date>20060523</date>
+                            </document-id>
+                        </patcit>
+                        <category>X</category>
+                        <rel-claims>1-4,7,8,11</rel-claims>
+                        <rel-passage>
+                            <passage>* abstract, figures 1A-4A *</passage>
+                            <passage>* column  1, lines  10-14 *</passage>
+                            <passage>* column  1, line  61  - column  2, line  24 *</passage>
+                            <passage>* column  2, lines  36-51 *</passage>
+                            <passage>* column  3, line  20  - column  5, line  67 *</passage>
+                        </rel-passage>
+                    </citation>
+                    <citation cited-phase="national-search-report" cited-by="examiner" sequence="2">
+                        <patcit dnum-type="publication number" num="2">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>US2018304070</doc-number>
+                                <name>THENUWARA CHULADATTA [US] ET AL</name>
+                                <date>20181025</date>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>US</country>
+                                <doc-number>2018304070</doc-number>
+                                <kind>A1</kind>
+                                <name>THENUWARA CHULADATTA [US] ET AL</name>
+                                <date>20181025</date>
+                            </document-id>
+                        </patcit>
+                        <category>A</category>
+                        <rel-claims>1-12</rel-claims>
+                        <rel-passage>
+                            <passage>* the whole document *</passage>
+                        </rel-passage>
+                    </citation>
+                    <citation cited-phase="national-search-report" cited-by="examiner" sequence="3">
+                        <patcit dnum-type="publication number" num="3">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>US2021106816</doc-number>
+                                <name>CLABEAUX SARAH ELIZABETH [US] ET AL</name>
+                                <date>20210415</date>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>US</country>
+                                <doc-number>2021106816</doc-number>
+                                <kind>A1</kind>
+                                <name>CLABEAUX SARAH ELIZABETH [US] ET AL</name>
+                                <date>20210415</date>
+                            </document-id>
+                        </patcit>
+                        <category>A</category>
+                        <rel-claims>1-12</rel-claims>
+                        <rel-passage>
+                            <passage>* the whole document *</passage>
+                        </rel-passage>
+                    </citation>
+                    <citation cited-phase="national-search-report" cited-by="examiner" sequence="4">
+                        <patcit dnum-type="publication number" num="4">
+                            <document-id document-id-type="epodoc">
+                                <doc-number>US2021353944</doc-number>
+                                <name>WALTER JERYLE L [US] ET AL</name>
+                                <date>20211118</date>
+                            </document-id>
+                            <document-id document-id-type="docdb">
+                                <country>US</country>
+                                <doc-number>2021353944</doc-number>
+                                <kind>A1</kind>
+                                <name>WALTER JERYLE L [US] ET AL</name>
+                                <date>20211118</date>
+                            </document-id>
+                        </patcit>
+                        <category>A</category>
+                        <rel-claims>1-12</rel-claims>
+                        <rel-passage>
+                            <passage>* the whole document *</passage>
+                        </rel-passage>
+                    </citation>
+                </references-cited>
+            </bibliographic-data>
+            <abstract lang="en">
+                <p>An apparatus in accordance with at least one of the present inventions comprises a cochlear implant including an electrode array with an array body that defines an outer surface and a plurality of electrically conductive contacts on the array body, and an electrode array cover assembly including an electrode array cover including a wall, defining an inner surface and an outer surface, and a plurality of spaced cover apertures that extend through an apertured portion of the wall from the inner surface to the outer surface and that are at least substantially aligned with the electrically conductive contacts, and means, at least partially within the electrode array cover, for holding the array body straight and against the inner surface of the apertured portion of the wall in such a manner that a fluidic seal is formed between the array body and the apertured portion of the wall.</p>
+            </abstract>
+        </exchange-document>
+    </exchange-documents>
+</ops:world-patent-data>

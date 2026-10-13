@@ -1,11 +1,12 @@
 """The providers that need an account: EPO Open Patent Services, The Lens, and SerpApi.
 
-**None of the three has been run against its service yet** (`verified = False`): no account was
-at hand when they were written, on 2026-10-07. Each is written from the service's published
-documentation, its fixture in `tests/fixtures/` is built from that documentation rather than cut
-from a live answer, and `patent-fetch providers` says so. An answer in a shape the adapter does
-not read raises `ProviderBroken`, which is logged and reported, never read as "no patents". The
-first live run of each belongs in CLAUDE.md under "Honest status", with what it changed.
+EPO OPS was run live on 2026-10-13 and its fixtures are cut from what it sent. **The Lens and
+SerpApi have not been run against their services yet** (`verified = False`): no account was at
+hand. Each of those two is written from the service's published documentation, its fixture in
+`tests/fixtures/` is built from that documentation rather than cut from a live answer, and
+`patent-fetch providers` says so. An answer in a shape the adapter does not read raises
+`ProviderBroken`, which is logged and reported, never read as "no patents". The first live run of
+each belongs in CLAUDE.md under "Honest status", with what it changed.
 """
 
 from __future__ import annotations
@@ -86,6 +87,13 @@ class EpoOps(Provider):
     from `/auth/accesstoken` (client credentials, Basic auth), lasts about 20 minutes and is kept
     in memory only.
 
+    **Run live 2026-10-13**, and every guess from the documentation held: the plain-query CQL, the
+    `Range` parameter, the 404 for an empty search (`SERVER.EntityNotFound`), a token good for
+    1,199 s, and full text for EP but not US (404 `CLIENT.InvalidCountryCode`, read here as "no
+    full text"). One thing it showed that the documentation did not: a cited reference may be an
+    application (`dnum-type="application number"`), which is not a publication and is left out
+    of `cites`. A search of two records was 42 kB and a description 68 kB of the weekly 4 GB.
+
     A plain query is sent as `ta all "<query>"` (every word, in title or abstract); a query that
     already uses CQL (`pa=`, `cpc=`, `ti all`, ...) is sent as written. OPS answers an empty
     search with **404**, which is therefore "no results" here, not an error.
@@ -97,7 +105,6 @@ class EpoOps(Provider):
     can_lookup = True
     needs = ("EPO_OPS_KEY", "EPO_OPS_SECRET")
     min_interval_s = 0.5
-    verified = False
     coverage = "100+ offices' bibliographic data; description and claims for EP, WO and some others"
     terms = "free with registration (developers.epo.org); 4 GB a week; EPO fair-use charter applies"
     BASE = "https://ops.epo.org/3.2"
@@ -234,7 +241,10 @@ class EpoOps(Provider):
         cited = [
             (_txt(next(_find(d, "country"), None)) or "")
             + (_txt(next(_find(d, "doc-number"), None)) or "")
-            for d in _find(doc, "references-cited", "patcit", "document-id")
+            for cit in _find(doc, "references-cited", "patcit")
+            # A citation can name an APPLICATION (a provisional, say): not a publication number.
+            if "application" not in (cit.get("dnum-type") or "")
+            for d in _find(cit, "document-id")
             if d.get("document-id-type") == "docdb"
         ]
         abstract = _english(list(_find(doc, "abstract")))

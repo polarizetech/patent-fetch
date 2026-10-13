@@ -1,11 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ops:world-patent-data xmlns:ops="http://ops.epo.org" xmlns="http://www.epo.org/exchange">
-  <ftxt:fulltext-documents xmlns:ftxt="http://www.epo.org/fulltext">
-    <ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only">
-      <ftxt:description lang="EN">
-        <ftxt:p>BACKGROUND</ftxt:p>
-        <ftxt:p>The sense of hearing in human beings involves the use of hair cells in the cochlea.</ftxt:p>
-      </ftxt:description>
-    </ftxt:fulltext-document>
-  </ftxt:fulltext-documents>
-</ops:world-patent-data>
+<ops:world-patent-data xmlns="http://www.epo.org/exchange" xmlns:ops="http://ops.epo.org" xmlns:xlink="http://www.w3.org/1999/xlink"><ftxt:fulltext-documents xmlns="http://www.epo.org/fulltext" xmlns:ftxt="http://www.epo.org/fulltext"><ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only"><bibliographic-data><publication-reference data-format="docdb"><document-id><country>EP</country><doc-number>4483941</doc-number><kind>A1</kind></document-id></publication-reference></bibliographic-data><description lang="EN"><p>BACKGROUND</p><p>1. Field</p><p>[0001]    The present disclosure relates generally to the implantable portion of implantable cochlear stimulation (or &quot;ICS&quot;) systems and, in particular, to electrode arrays.</p><p>2. Description of the Related Art</p></description></ftxt:fulltext-document></ftxt:fulltext-documents></ops:world-patent-data>

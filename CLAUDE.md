@@ -78,24 +78,27 @@ named in the search set (or the reverse) also raises.
 |---|---|---|---|---|---|
 | `europepmc` | ✓ | record, no claims | — | **yes** | `SRC:PAT`: life-science patents from the EPO's data. **An archive that ends in 2012**: 373,750 records for 2011, 126,514 for 2012, none for any later year, 4,229,296 in all. Good for prior art, useless for recent filings. |
 | `google-patents` | — never | description + claims | — | **yes** | One `/patent/<number>/en` page per lookup, 2 s apart. US7861317B2, WO2012016009A1 and EP2264377A2 each returned description and claims in English; an unknown number answered 404; a number without a kind code is served the latest publication. |
-| `epo-ops` | ✓ CQL | biblio + description + claims (EP, WO, some others) | free registration | **no** | Anonymous search answered 403 "violation of Fair Use policy". Everything else is from the documentation. |
+| `epo-ops` | ✓ CQL | biblio + description + claims (EP, WO, some others) | free registration | **yes, 2026-10-13** | Anonymous search answered 403 "violation of Fair Use policy". With a key: `ta all "cochlear implant electrode array"` matched 270 publications, newest first (2025, 2026); EP4483941 came back with description and claims; US documents have no full text (404 `CLIENT.InvalidCountryCode`); an empty search is 404 `SERVER.EntityNotFound`; the token lasts 1,199 s. |
 | `lens` | ✓ | record + claims + description | token | **no** | Anonymous request answered 401 "Missing/Incorrect Authorization Header". Everything else is from the documentation. |
 | `serpapi` | ✓ **opt-in** | — | paid | **no** | Google Patents' search through SerpApi's `google_patents` engine. Written from its documentation page. |
 
 ### `verified = False` means exactly that
 
-`epo-ops`, `lens` and `serpapi` were written without an account. Their fixtures
-(`epo_ops_*.xml`, `lens_search.json`, `serpapi_search.json`) are **built from the published
-documentation, not cut from a live answer**, so their tests prove the adapter reads the shape the
-documentation describes and nothing more. `Provider.verified` is False for each, which
-`patent-fetch providers` prints as `NOT YET RUN LIVE` and a search report carries as a `note`.
+`lens` and `serpapi` were written without an account. Their fixtures (`lens_search.json`,
+`serpapi_search.json`) are **built from the published documentation, not cut from a live answer**,
+so their tests prove the adapter reads the shape the documentation describes and nothing more.
+`Provider.verified` is False for each, which `patent-fetch providers` prints as
+`NOT YET RUN LIVE` and a search report carries as a `note`.
 
 **The first time one is run with a real key:** replace its fixture with a (trimmed) real answer,
 fix what breaks, set `verified = True`, and add a dated line under "Honest status" saying what the
-live service did differently. The points most likely to be wrong, in order: OPS's CQL index for a
-plain query (`ta all "..."`), the `Range` parameter, and whether an empty search is really a 404;
-Lens's `query_string` field names (`title`, `abstract`, `claim`), its `include` list, and the
-`doc_number` term used for lookup; SerpApi's error strings.
+live service did differently. The points most likely to be wrong: Lens's `query_string` field
+names (`title`, `abstract`, `claim`), its `include` list, and the `doc_number` term used for
+lookup; SerpApi's error strings.
+
+`epo-ops` went through exactly that on 2026-10-13: its three fixtures (`epo_ops_search.xml`,
+`epo_ops_biblio.xml`, `epo_ops_claims.xml`, plus a description cut to its first paragraphs) are
+real answers, and the one defect the live run showed is fixed and tested (below).
 
 ### Google Patents: the page, never the search
 
@@ -169,8 +172,8 @@ provider was `unavailable` or `error` during the sweep, because a provider that 
 be hiding new patents: run it again rather than trust it.
 
 A sweep is only as current as its providers. With no keyed provider enabled the only search
-provider is `europepmc`, which ends in 2012, so a sweep can never report anything new. **Get an
-EPO OPS key before relying on sweeps.**
+provider is `europepmc`, which ends in 2012, so a sweep can never report anything new. **Set
+`EPO_OPS_KEY` and `EPO_OPS_SECRET` before relying on sweeps.**
 
 ## Index-first, and why a stale index cannot cause a second retrieval
 
@@ -231,7 +234,18 @@ bucket can hold this library beside paper-fetch's `papers/`.
 - **Run live (2026-10-07):** `europepmc` search and lookup; `google-patents` lookup of three
   publications from three offices, stored with description and claims, and re-fetched with no
   network; a full CLI pass against the real services with the local store.
-- **Not run live:** `epo-ops`, `lens`, `serpapi` (no account), and the S3 store **in this
+- **Run live (2026-10-13):** `epo-ops`, with a registered key: search (plain words and CQL),
+  lookup of an EP document with description and claims, of a US document without, an unknown
+  number, and an empty search. Everything written from the documentation held. **What the live
+  answer showed that the documentation did not:** a cited reference can name an *application*
+  (`<patcit dnum-type="application number">`, typically a US provisional), which the adapter was
+  listing in `cites` as if it were a publication; those are now left out. OPS also returns US
+  application publications with eleven digits in a search and accepts ten in a lookup; `ids.py`
+  already read both. Cost, from the `x-registeredquotaperweek-used` header: about 42 kB for a
+  search of two records, 68 kB for one description, against 4 GB a week.
+- **Run through the research pipeline (2026-10-13):** see the gateway repository's run log; the
+  companion there calls `patent-fetch --json search` and prints the hits.
+- **Not run live:** `lens`, `serpapi` (no account), and the S3 store **in this
   repository** (it is paper-fetch's `S3Store` with the prefix changed, and its tests use a fake
   client).
 - **Search filters are applied after merging.** `countries` and `since` drop hits from what the

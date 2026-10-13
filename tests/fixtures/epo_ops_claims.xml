@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ops:world-patent-data xmlns:ops="http://ops.epo.org" xmlns="http://www.epo.org/exchange">
-  <ftxt:fulltext-documents xmlns:ftxt="http://www.epo.org/fulltext">
-    <ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only">
-      <ftxt:bibliographic-data><ftxt:publication-reference data-format="docdb"><ftxt:document-id><ftxt:country>EP</ftxt:country><ftxt:doc-number>2598092</ftxt:doc-number><ftxt:kind>B1</ftxt:kind></ftxt:document-id></ftxt:publication-reference></ftxt:bibliographic-data>
-      <ftxt:claims lang="DE"><ftxt:claim><ftxt:claim-text>1. Verfahren, umfassend: Anpassen.</ftxt:claim-text></ftxt:claim></ftxt:claims>
-      <ftxt:claims lang="EN"><ftxt:claim>
-        <ftxt:claim-text>1. A method comprising: using a first sound processor to fit a first cochlear implant.</ftxt:claim-text>
-        <ftxt:claim-text>2. The method of claim 1, further comprising transmitting the fitting data.</ftxt:claim-text>
-      </ftxt:claim></ftxt:claims>
-    </ftxt:fulltext-document>
-  </ftxt:fulltext-documents>
-</ops:world-patent-data>
+<ops:world-patent-data xmlns="http://www.epo.org/exchange" xmlns:ops="http://ops.epo.org" xmlns:xlink="http://www.w3.org/1999/xlink"><ftxt:fulltext-documents xmlns="http://www.epo.org/fulltext" xmlns:ftxt="http://www.epo.org/fulltext"><ftxt:fulltext-document system="ops.epo.org" fulltext-format="text-only"><bibliographic-data><publication-reference data-format="docdb"><document-id><country>EP</country><doc-number>4483941</doc-number><kind>A1</kind></document-id></publication-reference></bibliographic-data><claims lang="EN"><claim><claim-text>1. An apparatus, comprising:</claim-text><claim-text>a cochlear implant (100) including an electrode array (106, 106a) with an array body (120, 120a) that defines an outer surface (126, 126a) and a plurality of electrically conductive contacts (122) on the array body (120, 120a); and
+a brace (300, 320, 320&apos;, 400) secured to the outer surface (126, 126a) of the array body (120, 120a) and configured to maintain the array body (120, 120a) in straight state.</claim-text><claim-text>2. An apparatus as claimed in claim 1, wherein
+the brace (300, 320, 320&apos;, 400) includes a curved wall (302, 322, 322&apos;) that defines an open region in which the array body is located.</claim-text><claim-text>3. An apparatus as claimed in claim 1 or claim 2, wherein</claim-text><claim-text>the electrode array (106, 106a) and the brace (300, 320, 320&apos;, 400) define respective stiffnesses; and
+the brace (300, 320, 320&apos;, 400) is stiffer than the electrode array (106, 106a).</claim-text><claim-text>4. An apparatus as claimed in any one of claims 1 to 3, wherein
+the electrode array (106a) and the brace (300) are configured to interlock with one another.</claim-text><claim-text>5. An apparatus as claimed in claim 4, wherein</claim-text><claim-text>the array body (120a) includes a longitudinally extending slot (142); and
+the brace (300) includes a longitudinally extending rail (312) that is configured to fit into the longitudinally extending slot (142).</claim-text><claim-text>6. An apparatus as claimed in claim 5, wherein</claim-text><claim-text>the array body longitudinally extending slot (142) includes a wide portion and a narrow portion; and
+the brace longitudinally extending rail (312) includes a wide portion and a narrow portion.</claim-text><claim-text>7. An apparatus as claimed in any one of claims 1 to 3, wherein
+the brace (320, 320&apos;) is formed from a material that shrinks in response to the application of an external stimulus.</claim-text><claim-text>8. An apparatus as claimed in claim 7, wherein
+the material is selected from the group consisting of heat-shrink material and cold-shrink material.</claim-text><claim-text>9. An apparatus as claimed in any one of claims 1 to 3, wherein
+the brace (400) is formed from a strip of brace material (402) that is wrapped at least partially around the array body.</claim-text><claim-text>10. An apparatus as claimed in claim 9, wherein</claim-text><claim-text>the array body (120) is formed from an array body material; and
+the brace material (402) sticks to the array body material without adhesive.</claim-text><claim-text>11. An apparatus as claimed in any one of claims 1 to 10, wherein
+the electrically conductive contacts (122) are not covered by the brace (300, 320, 320&apos;, 400).</claim-text><claim-text>12. An apparatus as claimed in any one of claims 1 to 11, wherein</claim-text><claim-text>the brace (300, 320, 320&apos;, 400) defines an inner surface; and
+a fluidic seal is formed between the brace inner surface and the array body outer surface (126, 126a).</claim-text></claim></claims></ftxt:fulltext-document></ftxt:fulltext-documents></ops:world-patent-data>
