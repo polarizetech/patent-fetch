@@ -34,12 +34,16 @@ CI requires 90% coverage. Wiring a project in → [`INTEGRATION.md`](INTEGRATION
 - **It is written for anyone's research, not ours.** Nothing here names a project, a bucket, a
   host or a person: `tests/test_guarantees.py` fails if the package does. The store is "any
   S3-compatible bucket"; which one is the operator's `*.env` file, outside every repository.
-- **No MCP server, on purpose (2026-10-07).** The research gateway in
-  `polarizetech/retrieval-augmented-generation` mounts paper-fetch and dataset-fetch as MCP
-  servers and decides when each is a step in its pipeline; patent search is to join it the same
-  way. Until that is designed there, this repository is a library and a command line. Every
-  `Library` method returns plain JSON-shaped data and `patent-fetch --json <command>` prints it, so
-  a server here later is a thin wrapper, not a redesign. See INTEGRATION.md § "From an MCP gateway".
+- **No MCP server, on purpose (2026-10-07).** The research pipeline in
+  `polarizetech/retrieval-augmented-generation` uses this repository as a *companion*
+  (`research_pipeline/companions.py` there, merged 2026-10-07): when its planner judges a question
+  is about an invention, it runs `patent-fetch --json search "<words>"` once per query and prints
+  the hits under "Existing patents on this". Nothing is fetched and nothing becomes evidence.
+  **So the JSON that `--json search` prints is a contract with another repository**: `hits` (with
+  `id`, `title`, `year`, `applicants`, `inventors`, `classifications`, `status`, `url`) and
+  `providers` (with `provider`, `status`). Add fields freely; renaming or removing one means a change there
+  too. A server here later would be a thin wrapper over the same `Library` methods. See
+  INTEGRATION.md § "From an MCP gateway".
 - **No language model runs inside it.** Searching, merging, collections and sweeps are string
   matching and bookkeeping, so behaviour is testable and repeatable.
 - **Visibility: public**, decided 2026-10-07 by the operator, like paper-fetch and
